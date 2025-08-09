@@ -1,0 +1,1121 @@
+/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+
+// src/styles.scss
+
+// Custom Theming for Angular Material
+
+// For more information: https://material.angular.io/guide/theming
+
+//@import '../node_modules/@angular/material/prebuilt-themes/indigo-pink.css';
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+
+//@include mat.elevation-classes();
+//@include mat.app-background();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+
+$my-primary: mat.m2-define-palette(mat.$m2-indigo-palette);
+$my-accent: mat.m2-define-palette(mat.$m2-pink-palette, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+
+$my-warn: mat.m2-define-palette(mat.$m2-red-palette);
+
+//$my-typography: mat.define-typography-config();
+
+$my-typography: mat.m2-define-typography-config($font-family:"Oxygen",
+$headline-1: mat.m2-define-typography-level(112px, 112px, 300, $letter-spacing: -0.05em),
+$headline-2: mat.m2-define-typography-level(56px, 56px, 400, $letter-spacing: -0.02em),
+$headline-3: mat.m2-define-typography-level(45px, 48px, 400, $letter-spacing: -0.005em),
+$headline-4: mat.m2-define-typography-level(34px, 40px, 400),
+$headline-5: mat.m2-define-typography-level(24px, 32px, 400),
+$subtitle-1: mat.m2-define-typography-level(20px, 28px, 400),
+$body-1: mat.m2-define-typography-level(16px, 18px, 400),
+$body-2: mat.m2-define-typography-level(12px, 14px, 400)
+)
+;
+
+/*Create the theme object (a Sass map containing all of the palettes).*/
+
+$my-theme: mat.m2-define-light-theme(( color:(
+    primary: $my-primary,
+    accent: $my-accent,
+    warn: $my-warn ),
+ //   typography: $my-typography,
+    density: 0
+));  
+
+@include mat.all-component-themes($my-theme);
+
+// src/material/button/_button-theme.scss
+// content reduced for brevity
+
+// Applies a property to an mat-button element for each of the supported palettes.
+@mixin _theme-property($my-theme, $property, $hue) {
+  $primary: map.get($my-theme, primary);
+  $accent: map.get($my-theme, accent);
+  $warn: map.get($my-theme, warn);
+
+  &.mat-primary {
+    #{$property}: theming.get-color-from-palette($primary, $hue);
+  }
+  &.mat-accent {
+    #{$property}: theming.get-color-from-palette($accent, $hue);
+  }
+  &.mat-warn {
+    #{$property}: theming.get-color-from-palette($warn, $hue);
+  }
+
+  &.mat-primary,
+  &.mat-accent,
+  &.mat-warn,
+  &.mat-button-disabled {
+    &.mat-button-disabled {
+      $palette: if($property == "color", $foreground, $background);
+      #{$property}: theming.get-color-from-palette($palette, disabled-button);
+    }
+  }
+}
+
+@mixin color($config-or-theme) {
+  $config: theming.get-color-config($config-or-theme);
+  $foreground: map.get($config, foreground);
+
+  .mat-button,
+  .mat-icon-button,
+  .mat-stroked-button {
+    @include _theme-property($config, "color", text);
+  }
+}
+
+
+
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+
+
+//@include mat.typography-hierarchy($my-theme);
+
+
+/* You can add global styles to this file, and also import other style files */
+
+@import "../node_modules/leaflet/dist/leaflet.css";
+
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+.mat-form-field-appearance-legacy.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label:not(.mat-empty):not(.mat-form-field-empty) {
+  font-size: 12px;
+  // scale or font-size
+}
+
+//.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
+//.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
+//.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
+//  border-color: var(--border-color) !important;
+//}
+
+
+
+//@include mat.button-theme($my-theme);
+
+//@include mat.form-field-theme($my-theme);
+
+
+// Define a custom typography config that overrides the font-family as well as the
+// `headlines` and `body-1` levels.
+
+/// $custom-typography: mat.define-typography-config( $font-family: 'Oxygen', $display-4: mat.define-typography-level(112px, 112px, 300), $display-3: mat.define-typography-level(56px, 56px, 400), $display-2: mat.define-typography-level(45px, 48px, 400), $display-1: mat.define-typography-level(34px, 40px, 400), $headline: mat.define-typography-level(24px, 32px, 400), $
+/// : mat.define-typography-level(20px, 32px, 500), $subheading-2: mat.define-typography-level(16px, 28px, 400), $subheading-1: mat.define-typography-level(15px, 24px, 400), $body-2: mat.define-typography-level(14px, 24px, 500), $body-1: mat.define-typography-level(14px, 20px, 400), $caption: mat.define-typography-level(12px, 20px, 400), $button: mat.define-typography-level(14px, 14px, 500), $input: mat.define-typography-level(inherit, 1.125, 400) );
+
+/// @include mat.typography-hierarchy($custom-typography);
+
+// Override typography for a specific Angular Material components.
+/// @include mat.checkbox-typography($custom-typography);
+
+// Override typography for all Angular Material, including mat-base-typography and all components.
+//@include mat.all-component-typographies($my-typography);
+
+/// @include mat.core($custom-typography);
+
+
+html, body {
+  font-family: 'Oxygen', Arial, sans-serif;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.mat-typography, .mat-app-background, .mat-mdc-button,
+.mat-mdc-card, .mat-mdc-dialog-container {
+  font-family: 'Oxygen', Arial, sans-serif !important;
+}
+
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* important pour que le scroll fonctionne */
+  overflow: auto;
+}
+
+/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
+.mat-button-focus-overlay {
+  font-family: 'Oxygen';
+  background-color: transparent !important;
+}
+
+.mat-sidenav {
+  font-family: 'Oxygen';
+  min-width: 100px;
+}
+
+
+.mat-mdc-progress-spinner circle, .mat-mdc-progress-spinner circle {
+  stroke: #AD1457;
+}
+
+.mat-mdc-form-field-infix {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.mat-mdc-input-element {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  display: block !important;
+}
+
+.ellipsis-option {
+  display: block;
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.autocomplete-option-content {
+  font-weight: 500;
+  font-size: 1.25em;
+  color: #283593;
+  display: block;
+  white-space: normal; // autorise le retour à la ligne
+  overflow: visible; // plus de masquage
+  text-overflow: unset; // plus d’ellipsis
+  word-break: break-word; // coupe les mots longs si besoin
+  max-width: 100%; // prend toute la largeur de l’option
+}
+
+
+.mat-autocomplete-panel .mat-option {
+  font-size: 1.25em !important;
+  color: #222 !important;
+  line-height: 1.1 !important; /* interlignage serré */
+  min-height: 28px !important; /* hauteur minimale réduite */
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+}
+
+
+
+.autocomplete-option-content {
+  font-weight: 500;
+  color: #222 !important; // Texte noir pour le contenu personnalisé
+  font-size: 0.95em; // Taille de police réduite
+}
+
+.mat-mdc-autocomplete-panel .mat-mdc-option {
+  border-bottom: 12px solid #fafbfc; // couleur du fond du panneau
+  background: #fff !important;
+  font-size: 0.95em !important;
+  color: #222 !important;
+}
+
+
+.mat-autocomplete-panel .mat-option:last-child {
+  border-bottom: none;
+}
+
+.mat-autocomplete-panel .mat-option:hover,
+.mat-autocomplete-panel .mat-option.mat-active {
+  background: #f5f5f5 !important;
+}
+
+
+
+.mat-form-field input.mat-input-element.search-input-style {
+  font-size: 0.6em !important;
+}
+
+//css for components
+
+@mixin font-size($sizeValue:16px) {
+ font-size: $sizeValue;
+}
+
+.cardBackground {
+  height: fit-content;
+  margin-left: 12px;
+  margin-right: 0;
+  max-width: 100%; // ou supprimez cette ligne
+  width: 95%;
+  text-align: left;
+  padding-left: 30px; // marge intérieure à gauche
+  padding-right: 24px; // optionnel, pour équilibrer à droite
+}
+
+
+@media screen and (max-width: 959.98px) {
+  .cardBackground {
+    height: fit-content;
+    margin-right: 2px;
+    margin-left: 2px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+.listStyle{  // for styling the list of statements in a section
+    padding-left: 30px;
+}
+
+@media (max-width: 959.98px) {
+  //change of styling of the list of statements in a section for small screen
+  .listStyle { // for styling the list
+    padding-left: 5px;
+  }
+}
+
+.statementStyle { //size of the text of the statements
+  //color: black;
+  //color:mat-primary;
+  width: 60vw;
+  font-size: 16px;
+  padding-left: 15px;
+  padding-top: 2px;
+  padding-bottom: 2px; // from 3px
+}
+
+  .description-text { //color and weight for the descriptions of the statements and qualifiers
+    font-weight: 321;
+    color: #808080 !important;
+  }
+
+  .qualifierProperty { //size and color of the label of the qualifier
+    font-size: 14px;
+    color: #3F51B5;
+    font-style: italic;
+  }
+
+  .propertyStyle { // size and color or the label of the statement
+    color: #3F51B5;
+    @include font-size();
+    font-weight: 400;
+    padding-bottom: 4px;
+  }
+
+  .qualifierStyle { //size of the text of the qualifier
+    font-size: 14px;
+    padding-left: 10px;
+  }
+
+.referenceStyle { //size of the text of the reference
+  font-size: 14px;
+  padding-left: 20px;
+}
+
+.references-toggle-btn { // button for displaying/hiding references
+  background: #fff !important; // white background
+  // color: #3F51B5 !important; // blue text
+  color: #AD1457 !important; // red text
+  font-size: 0.80rem;
+  font-style: italic;
+  font-weight: 400;
+  border: none !important; // no border
+  box-shadow: none !important;
+  border-radius: 4px;
+  margin-left: 4px;
+  margin-bottom: 4px;
+  padding: 2px 8px;
+  text-transform: none;
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+
+  &:hover, &:focus {
+    background: #f6f8fd !important; // blue background on hover/focus
+   // color: #3F51B5 !important; // blue text on hover/focus
+    color: #AD1457 !important; // red text
+    box-shadow: none !important;
+  }
+}
+
+.triangle-icon {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-right: 6px;
+  vertical-align: middle;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 7px solid #AD1457; // red triangle
+  //border-left: 7px solid #3F51B5; // blue triangle
+  transition: transform 0.2s;
+
+  &.open {
+    transform: rotate(90deg); // triangle vers le bas quand ouvert
+  }
+}
+
+.triangle-with-margin {
+  margin-left: 6px;
+}
+
+
+.colored-reference {
+  background: #f6f8fd; // bleu primary très clair
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-top: 2px;
+}
+
+.inlineStyle {
+  display: inline-block;
+}
+
+  .calendarStyle { //size and style of the calendar type of the date
+    font-size: 10px;
+    font-style: italic;
+  }
+
+
+  .warningDeprecated { //warning for deprecated statements
+    font-size: 14px !important;
+    color: #AD1457;
+    // font-style:italic;
+  }
+
+  .qualifierTextColor { //color of the text of the qualifier
+    color: black;
+  }
+
+  .selectedItemText {
+    font-size: 16px; // from 16px
+    color: white;
+  }
+
+.selectedItemText2 {
+  font-size: 16px;
+  color: white;
+  // line-height: 15 px;
+  // display:list-item;
+  padding: 10 px;
+  }
+
+
+ .search-center { //style for the links in the search components
+    display: flex;
+    justify-content: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+.search-center1 { // for styling the search components
+  margin-top: 20px;
+  margin-left: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.search-center2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.search-inputs-row {
+  display: flex;
+  flex-direction: row;
+  gap: 24px; /* espace entre les deux inputs */
+  width: 100%;
+  justify-content: center;
+}
+
+.search-field {
+  width: 300px;
+  min-width: 220px;
+}
+
+.items-list-container {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centré par défaut (desktop) */
+  width: 100%;
+}
+
+@media (max-width: 700px) {
+  .items-list-container {
+    align-items: flex-start; /* aligné à gauche en mobile */
+  }
+}
+
+.items-list-inner {
+  width: 100%;
+  max-width: 700px; /* Ajustez selon vos besoins */
+  margin: 0 auto;
+  box-sizing: border-box;
+  background: #fafbfc;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+  padding: 16px 0;
+}
+
+
+.items-list-container ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.items-list-container li {
+  text-align: left;
+  background: none;
+  border-radius: 0;
+  margin-bottom: 0;
+  padding: 12px 0;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+}
+
+.items-list-container li:last-child {
+  border-bottom: none;
+}
+
+
+.items-list-container li:hover {
+  background: #f5f5f5;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.10);
+}
+
+@media (max-width: 700px) {
+  .items-list-inner,
+  .items-list-container ul {
+    max-width: 98vw;
+    padding: 0 2vw;
+  }
+
+  .items-list-container li {
+    padding: 10px 8px;
+  }
+}
+
+
+.filter-field {
+  width: 300px; /* ou la largeur souhaitée */
+  margin-bottom: 8px;
+  align-self: flex-start; /* S'assure que le filtre reste à gauche même si le parent est en flex */
+}
+
+/* Responsive : sur mobile, les inputs passent l’un sous l’autre */
+@media (max-width: 600px) {
+  .search-center2 {
+    padding-left: 8vw;
+    padding-right: 8vw;
+  }
+
+  .search-inputs-row {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .search-field {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+
+
+mat-form-field.search-field {
+  /* Force la même hauteur pour les deux champs */
+  min-height: 80px; // Ajustez selon le rendu, 80px est une base pour Angular Material outline
+}
+
+.search-field-col {
+  width: 300px; /* ou la largeur de ton mat-form-field */
+  margin: 0 auto; /* centre le bloc sur la page */
+}
+
+.search-icons-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: auto; /* prend toute la largeur du parent */
+  margin-top: 2px;
+  gap: 12px; /* espace entre les icônes */
+}
+
+.small-icon-btn .mat-icon {
+  color: #3F51B5;
+}
+
+.people-btn {
+  /* Optionnel : pour séparer un peu plus */
+  margin-right: 4px;
+}
+
+.small-icon {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  line-height: 18px !important;
+}
+
+button.mat-icon-button.active .mat-icon {
+  color: #1976d2 !important; // bleu pour actif
+  background: #e3f2fd;
+  border-radius: 50%;
+}
+
+button.mat-icon-button .mat-icon {
+  color: #888 !important; // gris pour inactif
+}
+
+
+.search-center3 { // for styling the search components
+  display: flex;
+  justify-content: center;
+}
+
+
+  .referenceProperty { //style for the property labels of references
+    font-size: 14px;
+    color: #AD1457;
+    font-style: italic;
+  }
+
+
+  .labelTitlePadding { //padding top on the labels of the statements
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  .iframeTitlePadding { //padding bottom on the title of the iframe
+    padding-bottom: 10px;
+  }
+
+
+  .mapPadding {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .subTitlePadding { // padding-bottom on the subtitles
+    padding-bottom: 12px;
+  }
+
+  .matCardPadding { //padding top and left of the mat-card
+    padding-top: 2px;
+    // padding-left:3px;
+  }
+
+  .searchFormPadding {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+  //// styling the externalLinks
+
+
+
+  .externalLinksPadding { //padding top and left of the externalLinks
+    padding-top: 10px;
+    padding-left: 3px;
+  }
+
+  .externalLinksText { //styling of the external links and wikis
+    font-size: 16px;
+    padding: 10px;
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    word-wrap: break-word;
+  }
+  ////
+
+  @mixin layout() {
+    padding-left: 10px;
+    padding-right: 10px;
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    word-wrap: break-word;
+  }
+
+  .displayLayout { // layout des external links and others
+    @include layout();
+  }
+
+
+  .url { // display of the url
+    word-wrap: break-word;
+  }
+
+
+  @mixin title() {
+    padding-bottom: 5px;
+    line-height: 30px;
+  }
+
+
+  .divisionTitle { //size and color of the subtitles
+    color: #AD1457;
+    font-size: 2rem;
+    font-weight: 100;
+    @include title();
+    margin-left: auto;
+    padding-top: 5px;
+    line-height: 0.8;
+  }
+
+  .bigTitle { //size and color of the title of the page of specific projects
+    padding-top: 20px;
+    padding-bottom: 50px;
+    color: #3F51B5;
+    font-size: 3rem;
+    font-weight: 150;
+    @include title();
+    display: flex;
+    justify-content: center;
+  }
+
+  @media (max-width: 959.98px) { //change the size of the title for small screen
+    .bigTitle { //big title of the bibliography of HU
+      font-size: 2.5rem;
+      line-height: 45px;
+      padding-top: 60px;
+      padding-left: 10px;
+    }
+  }
+
+.FactGridTitle { //size and color of the title of the search page of FactGrid
+  font-family: 'Inter', 'Oxygen', Arial, sans-serif; // Inter prioritaire, fallback sur Oxygen
+  padding-top: 20px;
+  padding-bottom: 50px;
+  color: #3F51B5;
+  font-size: 4rem;
+  font-weight: 200;
+  @include title();
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width:959.98px) {
+  .FactGridTitle {
+    font-size: 3.5rem;
+    padding-top: 80px;
+    transition: padding-top 0.2s;
+  }
+
+  .FactGridTitle.with-researchfield-input {
+    padding-top: 30px; // ou la valeur souhaitée
+  }
+}
+
+
+  .subTitle { // subtitle of the FactGrid title
+    padding-top: 20px;
+    display: flex;
+    justify-content: center;
+  }
+
+.selected-research-field {
+  display: flex;
+  justify-content: center; /* centre horizontalement le contenu */
+  align-items: center; /* centre verticalement si hauteur fixée */
+  color: #3F51B5;
+  font-weight: 400;
+  padding: 8px 30px;
+  margin: 0 auto; /* centre le div si largeur fixée */
+  padding-bottom: 40px; /* espace important sous l'élément */
+}
+
+
+
+.research-field-option {
+  line-height: 1.1;
+  min-height: 28px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  /* Optionnel : réduire la taille de police */
+  font-size: 0.97em;
+}
+
+.research-field-description {
+  font-size: 0.85em;
+  color: #888;
+  line-height: 1;
+  margin-top: 0;
+}
+
+  @media (min-width: 959.98px) { // change the size of the picture for big screen
+    .smallPicture {
+      width: 30%;
+    }
+  }
+
+  .cover {
+    object-fit: cover;
+  }
+
+  @media (max-width: 959.98px) { //change the size of the subtitles for small screen
+    .divisionTitle { //size and color of the subtitles
+      font-size: 1.6rem;
+    }
+  }
+
+  .subdivisionTitle { //size and color of the subsubtitles
+    color: #AD1457;
+    font-size: 1.6rem;
+    font-weight: 100;
+    padding-bottom: 15px;
+    margin-left: auto;
+  }
+
+  @media (max-width: 959.98px) { //change the size of the subsubtitles for small screen
+    .subdivisionTitle { //size and color of the subsubtitles
+      font-size: 1.4rem;
+    }
+  }
+
+  .selectedListTitle { //size and color of the title of selectedList in display
+    color: white;
+    font-size: 1.6rem;
+    font-weight: 100;
+    padding: 5px;
+    margin-left: auto;
+    margin-bottom: 10px;
+  }
+
+  .selectedListTitle2 { //size and color of the title of selectedList in search
+    color: white;
+    font-size: 1.2rem !important;
+    font-weight: 400;
+    padding: 5px;
+    margin-top: 20px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+  }
+
+  .listTitleStart {
+    align-self: start; // align left the subtitle linked page in the drawer
+    padding: 10px;
+  }
+
+.iFrameComment {
+  color: #3F51B5;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  word-break: normal;
+//  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+  .searchListSize { // in the search-component for the list of items
+    margin-top: 50px;
+    justify-content: center;
+    width: 80%;
+    font-size: 16px;
+  }
+
+.search-itemSelected-mat-card { //style the card of selected items
+  height: fit-content;
+  width: 600px;
+  background-color: rgb(99, 98, 98) !important;
+  margin-bottom: 4px;
+  margin-right: 2px;
+  margin-left: 2px;
+  /* Ajoutez ceci pour centrer */
+  margin-left: auto;
+  margin-right: auto;
+  display: block; // s'assure que le mat-card prend toute la largeur disponible
+}
+
+  @media (max-width: 959.98px) { //change the size of the subsubtitles for small screen
+    .search-itemSelected-mat-card { //size and color of the subsubtitles
+      width: 300px;
+    }
+  }
+
+.item-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 12px 0;
+}
+
+.item-row.clicked,
+.item-row.clicked:hover,
+.item-row.clicked:focus {
+  background-color: #e0e0e0 !important; 
+  transition: background-color 0.2s;
+}
+
+
+.item-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.item-label {
+  font-weight: 500;
+  color: black;
+  font-size: 1.1em; /* Taille de police légèrement plus grande */
+  line-height: 1.2; /* Interlignage pour une meilleure lisibilité */
+}
+
+.item-description {
+  color: #666;
+  font-size: 1.1em;
+  margin-top: 2px;
+  margin-left: 32px; /* pour l’aligner sous le label, optionnel */
+}
+
+@media (min-width: 700px) {
+  .item-row {
+    flex-direction: row;
+    align-items: center;
+  }
+  .item-main {
+    margin-right: 16px;
+  }
+  .item-description {
+    margin-top: 0;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .item-row {
+    flex-direction: row;
+    align-items: flex-start;
+    line-height: 1; // réduit l'interlignage en mobile
+  }
+
+  .item-main {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1; // réduit l'interlignage
+    width: auto;
+    flex: 1 1 auto;
+  }
+
+  .item-description {
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: left;
+    line-height: 1 !important;
+    width: 100%;
+  }
+}
+
+.item-actions {
+  align-self: flex-start; // pour aligner l'icône en haut
+  margin-left: auto;
+  margin-top: 0;
+}
+
+.internalLink {
+  cursor: pointer;
+  /* plus de position: absolute */
+  display: inline-flex;
+  align-items: center;
+}
+
+.mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: 0 !important;
+  height:0 !important;
+}
+
+.whiteText {
+  //  color:white;
+  color: #283593;
+}
+
+  .center { // use in the display-component for buttons on the drawer and new search
+    display: flex;
+    justify-content: center;
+    //  padding: 5px;
+    //  background-color: rgb(250, 245, 236);
+  }
+
+
+  .blueButton { //use for the button opening the panel in the displayComponent
+    color: #283593;
+    font-size: medium;
+    line-height: 30px;
+  }
+
+
+  .whiteButton { //use for you have visited
+    color: white;
+    font-size: medium;
+    line-height: 30px;
+  }
+
+  .basicSize {
+    font-size: 16px;
+  }
+
+  .spinner {
+    // background-color: rgb(250, 245, 236);
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+  }
+
+
+/* Titres et sous-titres principaux */
+.home-header, .prosopo-header, .hu-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 32px;
+  margin-top: 24px;
+}
+
+.home-title, .prosopo-title, .hu-title {
+  font-size: 3rem;
+  color: #3F51B5;
+  font-family: 'Oxygen', Arial, Helvetica, sans-serif;
+  font-weight: 150;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.home-subtitle, .prosopo-subtitle, .hu-subtitle {
+  font-size: 1.3rem;
+  color: #666;
+  font-family: 'Oxygen', Arial, Helvetica, sans-serif;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+/* Spécifique pour mobile */
+@media (max-width: 767px) {
+  .home-title, .prosopo-title, .hu-title {
+    line-height: 1.1; /* Interlignage encore plus grand sur mobile */
+    font-size: 2.5rem; /* Réduire légèrement la taille si nécessaire */
+  }
+
+  .home-subtitle, .prosopo-subtitle, .hu-subtitle {
+    line-height: 1.1;
+    margin-top: 3px;
+    margin-bottom: 3px;
+  }
+}
+
+/* Liens sous le titre */
+.prosopo-links, .hu-links {
+  margin-top: 8px;
+  font-size: 1.1rem;
+  color: #3F51B5;
+  text-align: center;
+}
+
+.prosopo-links a, .hu-links a {
+  color: #3F51B5;
+  text-decoration: none;
+  font-weight: 400;
+  margin: 0 4px;
+}
+
+.prosopo-links a:hover, .hu-links a:hover {
+  text-decoration: underline;
+}
+
+.router-links {
+  display: flex;
+  justify-content: center;
+  gap: 1px; /* espace entre les liens */
+ // margin-top: 6px;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 767px) {
+  .router-links {
+    display: flex;
+    justify-content: center;
+    gap: 1px; /* espace entre les liens */
+    font-size: 0.7rem;
+  }
+
+
+  }
+
+  // Effet de survol générique pour fond clair
+  .hover-bg-light {
+    transition: background-color 0.2s;
+  }
+
+  .hover-bg-light:hover, .hover-bg-light:focus {
+    background-color: #f5f5f5 !important; // gris très clair
+    cursor: pointer;
+  }
+
+  // Effet de survol générique pour fond accentué (exemple)
+  .hover-bg-accent {
+    transition: background-color 0.2s;
+  }
+
+  .hover-bg-accent:hover, .hover-bg-accent:focus {
+    background-color: #e3eafc !important; // bleu très clair
+    cursor: pointer;
+  }
+
+  .separatorStyle {
+    margin-left: 1em; // ou la valeur qui convient, par exemple 8px ou 16px
+  }
+
+
+
+
+
+
+
+

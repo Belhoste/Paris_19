@@ -1,0 +1,13 @@
+import{P as s,T as o,k as n,pd as c,qd as d,r as u}from"./chunk-MW253N2G.js";var g=(()=>{let l=class l{constructor(){this.request=o(c),this.lang=o(d),this.biblioData$=new n(null),this.myLang="%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22"+this.lang.selectedLang+"%22%2C%22en%22.%20%7D%0A%7D%0A"}sparqlBuilding(t,e,a){let b="https://database.factgrid.de/query/#",r=`
+SELECT DISTINCT ?title ?titleLabel ?author ?authorLabel ?date ?location ?locationLabel ?country ?countryLabel
+WHERE {
+  VALUES ?c { wd:Q21925 wd:Q11317 }
+  ?title wdt:P2 wd:Q20;
+         wdt:P243 wd:Q172203;
+         wdt:P21 ?author;
+         wdt:P222 ?date;
+         wdt:P241 ?location
+  ${decodeURIComponent(t)}
+`.trim();e!==void 0&&(r+=`
+LIMIT ${e}`),a!==void 0&&a>0&&(r+=`
+OFFSET ${a}`);let h=r.replace(/\n/g," ");return b+encodeURIComponent(h)}updateBiblioData(t){this.biblioData$.next(t)}listFromSparql(t){return t?.results?.bindings?t.results.bindings.map(e=>({author:e.author?{id:e.author.value.replace("https://database.factgrid.de/entity/",""),label:e.authorLabel?.value||""}:void 0,title:e.title?{id:e.title.value.replace("https://database.factgrid.de/entity/",""),label:e.titleLabel?.value||""}:void 0,location:e.location?{id:e.location.value.replace("https://database.factgrid.de/entity/",""),label:e.locationLabel?.value||""}:void 0,country:e.country?{id:e.country.value.replace("https://database.factgrid.de/entity/",""),label:e.countryLabel?.value||""}:void 0,date:{value:e.date?.value?e.date.value.slice(0,4):""}})):[]}databaseToDisplay(t){return this.request.getList(t).pipe(u(e=>this.listFromSparql(e)))}loadBiblioData(t){this.databaseToDisplay(t).subscribe({next:e=>this.biblioData$.next(e),error:e=>console.error("Erreur lors du chargement des donn\xE9es",e)})}getBiblioData(){return this.biblioData$.asObservable()}getCurrentData(){return this.biblioData$.getValue()}newSparqlAdress(t){let e="https://database.factgrid.de/sparql?query=",a="https://database.factgrid.de/query/#";return t.includes("embed.html")&&(a="https://database.factgrid.de/query/embed.html#"),t!==void 0&&(t=t.replace(a,e)),t}databaseToDownload(t){let e=[["author","author.id","title","title.id","location","location.id","country","country.id","date"]];for(let a=0;a<t.length;a++)e[a+1]=[t[a].author.label,t[a].author.id,t[a].title.label,t[a].title.id,t[a].location.label,t[a].location.id,t[a].country.label,t[a].country.id,t[a].date.value];return e}initBiblioData(t){(!this.biblioData$.getValue()||this.biblioData$.getValue().length===0)&&this.loadBiblioData(t)}};l.\u0275fac=function(e){return new(e||l)},l.\u0275prov=s({token:l,factory:l.\u0275fac,providedIn:"root"});let i=l;return i})();export{g as a};

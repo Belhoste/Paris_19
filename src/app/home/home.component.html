@@ -1,0 +1,72 @@
+<div class="cardBackground">
+  <div class="home-header">
+    <div class="home-title">Harmonia Universalis</div>
+    <div class="home-subtitle">{{ home_subtitle }}</div>
+  </div>
+
+ <div class="home-cards">
+  <!---   <mat-card-title>Base prosopographique</mat-card-title>
+   <mat-card class="home-card mat-elevation-z4">
+      <mat-card-content>
+        Accédez à la base de données des personnes liées au magnétisme animal.
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" routerLink="/prosopography">
+          Prosopographie
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  --->
+
+
+     <mat-card class="home-card mat-elevation-z4">
+       <mat-card-title>{{animalMagnetism}}</mat-card-title>
+       <mat-card-content>
+         {{searchOnAnimalMagnetism}}.
+       </mat-card-content>
+       <mat-card-actions>
+         <button mat-raised-button color="primary" routerLink="/animal_magnetism">
+           {{search}}
+         </button>
+       </mat-card-actions>
+     </mat-card>
+
+     <mat-card class="home-card mat-elevation-z4">
+       <mat-card-title>{{bibliography}}</mat-card-title>
+       <mat-card-content>
+         {{searchOnBibliography}}.
+       </mat-card-content>
+       <mat-card-actions>
+         <button mat-raised-button color="primary" routerLink="/bibliography">
+           {{search}}
+         </button>
+       </mat-card-actions>
+     </mat-card>
+
+     <mat-card class="home-card mat-elevation-z4">
+       <mat-card-title>FactGrid</mat-card-title>
+       <mat-card-content>
+         {{searchOnFactGrid}}.
+       </mat-card-content>
+       <mat-card-actions>
+         <button mat-raised-button color="primary" routerLink="/search">
+           {{search}}
+         </button>
+       </mat-card-actions>
+     </mat-card>
+</div>
+
+    <!-- Bloc image sous les cartes, bien aligné -->
+    <div class="home-image-card">
+      <mat-card class="mat-elevation-z2">
+        <img src="assets/magnetisme.jpg" alt="Animal magnetism illustration" class="home-image desktop-image" />
+        <img src="assets/magnetisme_mobile.jpg" alt="Animal magnetism mobile" class="home-image mobile-image" />
+        <mat-card-content>
+          <div class="image-caption">
+            Illustration sur le magnétisme animal (source : domaine public)
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+  </div>

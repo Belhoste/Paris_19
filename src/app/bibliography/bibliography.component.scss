@@ -1,0 +1,270 @@
+/* Styles de base pour l'hôte du composant */
+:host {
+  display: block;
+  width: 100%;
+  overflow-x: hidden; /* Empêcher le défilement horizontal au niveau du composant */
+  box-sizing: border-box;
+}
+
+/* Styles existants avec quelques ajustements */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.loading-message {
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+/* Amélioration du conteneur de table pour éviter le dépassement */
+.mat-elevation-z8.container {
+  width: 100%;
+  overflow-x: auto; /* Permettre le défilement horizontal uniquement pour la table */
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0; /* Éliminer les marges */
+}
+
+/* Correction pour les cartes Material */
+mat-card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+mat-card-content {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* Correction pour cardBackground pour éviter le dépassement */
+.cardBackground {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+
+  @media (max-width: 813px) {
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+/* Styles généraux pour la table */
+.mat-table {
+  font-size: 1em;
+  width: 100%;
+}
+
+th.mat-header-cell {
+  white-space: nowrap;
+  padding: 12px 8px;
+  font-size: 1em;
+  vertical-align: middle;
+}
+
+.mat-sort-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.mat-sort-header-arrow, .mat-sort-header-indicator {
+  color: #1976d2;
+  transition: color 0.2s;
+}
+
+/* Style pour les liens router dans la recherche */
+.router-links {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap; /* Permet de passer à la ligne si nécessaire */
+
+  @media (max-width: 600px) {
+    gap: 8px;
+    /* Permettre aux séparateurs de passer à la ligne si nécessaire */
+    span {
+      display: inline-block;
+    }
+  }
+}
+
+.item-link {
+  cursor: pointer;
+  color: #1976d2;
+  transition: background 0.2s, color 0.2s;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+.item-link.clicked {
+  background: #1976d2;
+  color: #fff;
+}
+
+/* Assurer que le paginateur reste dans les limites */
+mat-paginator {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Corriger la taille des icônes pour éviter les débordements */
+.compact-icon-btn {
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+
+  .small-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+  }
+}
+
+// Responsive : adaptation pour mobile
+@media (max-width: 600px) {
+  .mat-table {
+    font-size: 0.95em;
+  }
+
+  th.mat-header-cell {
+    white-space: nowrap;
+    padding: 8px 4px;
+    font-size: 1em;
+    vertical-align: middle;
+  }
+
+  .mat-sort-header-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .mat-sort-header-arrow,
+  .mat-sort-header-indicator {
+    opacity: 1 !important; // Force l'affichage de la flèche
+    color: #1976d2 !important;
+    font-size: 1.2em;
+    margin-left: 2px;
+  }
+
+  .mat-header-row {
+    display: none;
+  }
+
+  .responsive-cell {
+    display: block;
+    width: 100%;
+    padding: 0 16px;
+    margin: 16px 0;
+    border: 0 none;
+    position: relative;
+    padding-left: 110px; // espace pour le label
+    box-sizing: border-box;
+  }
+
+  .responsive-cell::before {
+    content: attr(data-label) ": ";
+    position: absolute;
+    left: 16px;
+    top: 0;
+    font-weight: bold;
+    color: #666;
+    white-space: nowrap;
+  }
+
+  .responsive-row {
+    display: block;
+    overflow: hidden;
+    height: auto;
+    position: relative;
+    box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
+    border-radius: 3px;
+    margin-bottom: 24px;
+    width: 100%;
+    box-sizing: border-box;
+
+    + .responsive-row {
+      margin-top: 24px;
+    }
+  }
+
+  mat-paginator {
+    margin-top: 24px;
+    width: 100%;
+  }
+
+  .mobile-sort-buttons {
+    display: flex;
+    flex-wrap: wrap; /* Permettre les boutons de passer à la ligne */
+    gap: 2px;
+    justify-content: center;
+    margin-bottom: 12px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .sort-btn {
+    min-width: unset;
+    padding: 2px 6px;
+    font-size: 0.95em;
+    line-height: 1.2;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .sort-btn:focus {
+    outline: none;
+  }
+
+  .sort-btn mat-icon {
+    margin-left: 2px;
+    font-size: 1em;
+  }
+
+  /* Assurer que la recherche s'adapte à la largeur */
+  mat-form-field {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* S'assurer que l'en-tête reste dans le viewport */
+  .hu-header {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .hu-title {
+    width: 100%;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    box-sizing: border-box;
+  }
+}
+
+.filtered-count {
+  font-size: 0.95em;
+//  color: #1976d2;
+  vertical-align: middle;
+}

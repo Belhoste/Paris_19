@@ -1,0 +1,93 @@
+<div class="app-container">
+
+  <mat-toolbar class="custom-toolbar">
+
+
+    <span class="toolbar-spacer"></span>
+
+    <!-- Champ de recherche projet (desktop uniquement)
+    <div *ngIf="showResearchField" class="desktop-only">
+      <mat-form-field appearance="outline" style="width: 250px; margin: 8px;">
+        <mat-label>{{projectSearch}}</mat-label>
+        <input #searchResearchFieldInput
+               type="text"
+               matInput
+               [formControl]="searchResearchField"
+               [matAutocomplete]="autoResearchField"
+               [placeholder]="projectName">
+        <mat-autocomplete #autoResearchField="matAutocomplete"
+                          [displayWith]="displayResearchField"
+                          class="wide-autocomplete"
+                          (optionSelected)="researchFieldSelect($event.option.value)">
+          <mat-option *ngFor="let researchField of filteredResearchFields$ | async"
+                      [value]="researchField"
+                      class="research-field-option">
+            <span>{{ researchField.name }}</span>
+            <span *ngIf="researchField.description" class="research-field-description">
+              {{ researchField.description }}
+            </span>
+            <mat-icon *ngIf="researchField.id === selectedResearchField" color="primary" style="margin-left:8px;">check_circle</mat-icon>
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+    <button mat-icon-button class="toolbar-btn" (click)="toggleResearchField()" aria-label="Sélection du projet de recherche">
+      <mat-icon>settings</mat-icon>
+    </button>---->
+
+
+    <button mat-icon-button class="toolbar-btn" onClick="window.open('https://blog.factgrid.de/archives/2684')" aria-label="Informations">
+      <mat-icon>info</mat-icon>
+    </button>
+
+    <button mat-icon-button class="toolbar-btn" [matMenuTriggerFor]="menuLanguage" aria-label="Sélection de la langue">
+      <mat-icon>language</mat-icon>
+    </button>
+    <mat-menu #menuLanguage="matMenu" class="language-menu">
+      @for (lang of langs; track lang) {
+      <button (click)="langSetting(lang)" mat-menu-item [class.selected-lang]="lang.code === this.selectedLang">
+        @if (lang.flag) {
+        <img [src]="lang.flag" width="24" height="16" style="margin-right:8px; border-radius:2px;">
+        }
+        <span style="flex:1; font-weight: 500;">{{lang.name}}</span>
+        @if (lang.code === this.selectedLang) {
+        <mat-icon color="primary">check_circle</mat-icon>
+        }
+      </button>
+      }
+    </mat-menu>
+  </mat-toolbar>
+
+  <!-- Champ de recherche projet (mobile uniquement, sous le logo)
+  <div *ngIf="showResearchField" class="mobile-only researchfield-mobile">
+    <mat-form-field appearance="outline" style="width: 90vw; max-width: 350px;">
+      <mat-label>{{projectSearch}}</mat-label>
+      <input #searchResearchFieldInputMobile
+             type="text"
+             matInput
+             [formControl]="searchResearchField"
+             [matAutocomplete]="autoResearchField"
+             [placeholder]="projectName">
+      <mat-autocomplete #autoResearchField="matAutocomplete"
+                        [displayWith]="displayResearchField"
+                        class="wide-autocomplete"
+                        (optionSelected)="researchFieldSelect($event.option.value)">
+        <mat-option *ngFor="let researchField of filteredResearchFields$ | async"
+                    [value]="researchField"
+                    class="research-field-option">
+          <span>{{ researchField.name }}</span>
+          <span *ngIf="researchField.description" class="research-field-description">
+            {{ researchField.description }}
+          </span>
+          <mat-icon *ngIf="researchField.id === selectedResearchField" color="primary" style="margin-left:8px;">check_circle</mat-icon>
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+    -->
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+  <app-footer></app-footer>
+</div>

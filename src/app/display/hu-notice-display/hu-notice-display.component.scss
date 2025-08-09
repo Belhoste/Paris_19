@@ -1,0 +1,35 @@
+.notice-card {
+  margin: 2px; // marges externes très petites
+  background: #f5faff; // bleu très clair
+}
+
+.notice-card .mat-card-content {
+  padding: 28px 24px; // padding interne augmenté
+}
+
+.notice-toggle-label {
+  color: #3F51B5; // couleur de la palette principale
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.notice-toggle-label .triangle-icon {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-right: 6px;
+  vertical-align: middle;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 7px solid #3F51B5; // bleu palette
+  transition: transform 0.2s;
+}
+
+.notice-toggle-label .triangle-icon.open {
+  transform: rotate(90deg);
+}
+
+.notice-toggle-label .propertyStyle {
+  color: #3F51B5 !important;
+}

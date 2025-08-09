@@ -1,0 +1,270 @@
+  <mat-card appearance="outlined" class=mat-elevation-z12>
+  <mat-card-content>
+
+    <div class="listStyle">
+      <div>Query:</div>
+      @if(query.value.statements){
+    
+      @for(statement of query.value.statements; track statement.itemType){
+      <div class="statementStyle">
+        @if(statement.optional) { (optional) }
+        @if(statement.itemType) { statement {{ statement.itemType[0] + 1 }} : subject: {{ statement.itemType[1] }} }
+        @if(statement.properties) { -> property: @for (property of statement.properties; track property ) {{{ property[3] }}} }
+        @if(statement.value) { -> object:
+           @if(statement.value.itemValue) { {{ statement.value.itemValue[1] }} }
+           @if(statement.value.literalValue) { {{statement.value.literalValue[1] }}  }
+           @if(statement.value.literalString) { {{statement.value.literalString }} }
+       }
+      </div>
+
+      @if(statement.qualifiers){
+      <div class="listStyle">
+        @for(qualifier of statement.qualifiers; track qualifier.qualifierProperty[1]){
+        <div class="statementStyle">
+          @if(qualifier.qualifierProperty) { qualifier {{ qualifier.qualifierProperty[1] + 1 }} :  property: {{ qualifier.qualifierProperty[4] }}}
+          @if(qualifier.value){
+          @if(qualifier.value.qualifierValue) { -> object: {{ qualifier.value.qualifierValue[2] }}}
+          @if(qualifier.value.qualifierLiteralValue) { -> object: {{ qualifier.value.qualifierLiteralValue[2] }}}
+          @if(qualifier.value.qualifierLiteralString) { -> object: {{ qualifier.value.qualifierLiteralString }}}
+          }
+       </div>
+       }
+      </div>
+      }
+     }
+    }
+    </div>
+  </mat-card-content>
+
+  <mat-card-content class="whiteBackGround" id="statements">
+    <p class="search-center">Statement:</p>
+    <form [formGroup]="query">
+      <div class="formPadding">
+        <div formArrayName="statements">
+
+          @for(statement of statements.controls; let i = $index; track statement){  <!---note that track is on statement!-->
+
+          <div class="search-center3 cardGreyBackground"
+               [formGroupName]="i">
+
+            <!---    @if( i === statements.length -1){     --->
+
+            <div class="listStyle">Statement {{ i + 1 }} <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<mat-checkbox formControlName="optional">Optional</mat-checkbox></span>:</div>
+            <!--- form field for selecting the type of the item with search --->
+            <mat-form-field appearance="fill">
+              <mat-select placeholder="subject?"
+                          formControlName="itemType" required
+                          (selectionChange)="onItemTypeSelect($event)"
+                          #singleSelect>
+                <mat-option>
+                  <ngx-mat-select-search placeholderLabel="Search"
+                                         [formControl]="itemTypeFilterCtrl"
+                                         [noEntriesFoundLabel]=noDataFoundLabel></ngx-mat-select-search>
+                </mat-option>
+                <mat-option *ngFor="let itemType of filteredItemTypesArray[i] | async" [value]="[i, itemType.label, itemType.value, itemType.id, itemType.order]">
+                  {{itemType.label}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!--- form field for multi-selecting the property of the statement with search --->
+            <mat-form-field appearance="fill">
+              <!---             <mat-select placeholder={{this.propertiesValues[i]}} --->
+              <mat-select placeholder="properties?"
+                          formControlName="properties" required
+                          [multiple]="true"
+                          (selectionChange)="onPropertySelect($event)">
+                <mat-option>
+                  <ngx-mat-select-search placeholderLabel="Search"
+                                         [formControl]="propertytMultiFilterCtrl"
+                                         noEntriesFoundLabel="Not found"></ngx-mat-select-search>
+                </mat-option>
+                <mat-option *ngFor="let property of filteredPropertyMultiArray[i] | async" [value]="[i, property.value, property.id, property.type]">
+                  {{ property.label }}
+                </mat-option>
+              </mat-select>
+              @if (statements.at(i).get('properties').hasError('differentDatatype')) {
+              <div class="validatorWarning">
+                Select several properties only if they have the same type
+              </div>
+              }
+            </mat-form-field>
+
+            <!--- form field for single-selecting the wikibase value of the statement with search --->
+            <div class="search-center3" formGroupName="value">
+              @if (isWikibaseItemOnStatement === true) {
+              <mat-form-field appearance="fill">
+                <mat-select placeholder="value?"
+                            formControlName="itemValue" required
+                            (selectionChange)="onValueSelect($event)"
+                            #singleSelect>
+                  <mat-option>
+                    <ngx-mat-select-search placeholderLabel="Search"
+                                           [formControl]="itemValueFilterCtrl"
+                                           noEntriesFoundLabel="Not found"></ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let itemValue of filteredItemValuesArray[i] | async" [value]="[i, itemValue.label, itemValue.col, itemValue.id]">
+                    {{itemValue.label}}{{itemValue.separator}}{{itemValue.description}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              }
+
+              @if (isLiteralOnStatement === true) {
+              <mat-form-field appearance="fill">
+                <mat-select placeholder={{placeholderForLiteralValue}}
+                            formControlName="literalValue" required
+                            (selectionChange)="onLiteralValueSelect($event)"
+                            #singleSelect>
+                  @for ( literalVariable of literalVariables; track literalVariable ) {
+                  <mat-option [value]="[i, literalVariable.label, literalVariable.col]">
+                    {{literalVariable.label}}
+                  </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+
+
+
+              <!--- form field for input the literal value of the statement with search --->
+              <!----        @if (isLiteralStringOnStatement === true){   --->
+              <mat-form-field appearance="fill">
+                <input matInput placeholder={{placeholderForLiteralString}} formControlName="literalString">
+              </mat-form-field>
+              <!-----        }  --->
+              }
+            </div>
+
+            <!---        <mat-form-field appearance="fill">
+  <mat-checkbox formControlName="optional">
+    Optional
+  </mat-checkbox> -->
+            <!----------------------------------------------start of qualifiers------------------------------------------------------->
+            @if(isQualifier === true){
+            <div formArrayName="qualifiers">
+              @for(qualifier of qualifiers(i).controls; let j = $index; track qualifier){  <!---note that track is on qualifier-->
+              <div class="search-center3 cardGreyBackground"
+                   [formGroupName]="j">
+
+                @if( j === qualifiers(i).length -1){
+
+                <div class="listStyle">Qualifier {{ j + 1 }} <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<mat-checkbox formControlName="optional">Optional</mat-checkbox></span>:</div>
+                <!--- form field for selecting the property of the qualifier with search --->
+                <mat-form-field appearance="fill">
+
+                  <!---             <mat-select placeholder={{this.propertiesValues[i]}} --->
+                  <mat-select placeholder="property?"
+                              formControlName="qualifierProperty" required
+                              (selectionChange)="onQualifierPropertySelect($event)">
+                    <mat-option>
+                      <ngx-mat-select-search placeholderLabel="Search"
+                                             [formControl]="qualifierPropertyFilterCtrl"
+                                             noEntriesFoundLabel="Not found"></ngx-mat-select-search>
+                    </mat-option>
+
+                    <mat-option *ngFor="let qualifier of filteredQualifierProperties | async" [value]="[i,j,qualifier.id, qualifier.propertyType.id, qualifier.itemLabel.value]">
+                      {{qualifier.itemLabel.label}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <!--- form field for single-selecting the wikibase value of the statement with search --->
+                <div class="search-center3" formGroupName="value">
+                  @if (isWikibaseItemOnQualifier === true) {
+                  <mat-form-field appearance="fill">
+                    <mat-select placeholder="value?"
+                                formControlName="qualifierValue" required
+                                (selectionChange)="onQualifierValueSelect($event)"
+                                #singleSelect>
+                      <mat-option>
+                        <ngx-mat-select-search placeholderLabel="Search"
+                                               [formControl]="qualifierValueFilterCtrl"
+                                               noEntriesFoundLabel="Not found"></ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option *ngFor="let qualifierValue of filteredQualifierValues | async" [value]="[i, j, qualifierValue.label, qualifierValue.col, qualifierValue.id]">
+                        {{qualifierValue.label}}{{qualifierValue.separator}}{{qualifierValue.description}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  }
+                  @if (isLiteralOnQualifier === true) {
+                  <mat-form-field appearance="fill">
+                    <mat-select placeholder="literal value?"
+                                formControlName="qualifierLiteralValue" required
+                                (selectionChange)="onQualifierLiteralValueSelect($event)"
+                                #singleSelect>
+                      @for ( qualifierLiteralVariable of qualifierLiteralVariables; track qualifierLiteralVariable ) {
+                      <mat-option [value]="[i, j, qualifierLiteralVariable.label, qualifierLiteralVariable.col]">
+                        {{qualifierLiteralVariable.label}}
+                      </mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                  <!--- form field for input the literal value of the statement with search --->
+                  @if(isLiteralStringOnQualifier) {
+                  <mat-form-field appearance="fill">
+                    <input matInput value="string?" formControlName="qualifierLiteralString">
+                  </mat-form-field>
+                  }
+                  }
+                </div>
+
+
+
+                }
+              </div>
+              }
+
+            </div>
+
+            @if(isRemoveQualifier){
+            <div class="search-center">
+              <button type="button" (click)="removeQualifiers(i,j)">Remove qualifier</button>
+            </div>
+            }
+
+
+            }
+            @if (isAddQualifier) {
+            <div class="search-center">
+              <button type="button" (click)="addQualifiers(i)">Add qualifier</button>
+            </div>
+            }
+
+            <!---   }     -->
+            <!----       @if (isAddQualifier) {
+         <div class="search-center">
+           <button type="button" (click)="addFirstQualifier(i)">Add first qualifier</button>
+         </div>
+         }
+  -->
+            <!-------------------------------------------------end of qualifier-------------------------------------------------------->
+
+
+          </div>
+
+          @if(isRemoveStatement){
+          <div class="search-center">
+            <button type="button" (click)="removeStatements(i)">Remove statement</button>
+          </div>
+          }
+
+          @if(isAddStatement){
+          <div class="search-center">
+            <button type="button" (click)="addStatements()">Add Statement</button>
+          </div>
+          }
+          }
+
+        </div>
+      </div>
+    </form>
+    <div>
+      <p class="search-center">  {{ query.value | json }}</p>
+    </div>
+  </mat-card-content>
+
+</mat-card>
+
+
+

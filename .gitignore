@@ -1,0 +1,6 @@
+# Ignorer le cache Angular
+.angular/
+# Ignorer le dossier FileContentIndex
+FileContentIndex/
+# Ignorer le dossier de configuration de Visual Studio
+.vs/

@@ -1,0 +1,165 @@
+  <div class="cardBackground">
+    <div class="hu-header">
+      <div class="hu-title">
+        {{bibliography}}
+      </div>
+      <div class="search-center router-links">
+        <a [routerLink]="['']">{{home_page}}</a>
+        <span>&nbsp;|&nbsp;</span>
+        <a [routerLink]="['/animal_magnetism']">Harmonia universalis</a>
+        <span>&nbsp;|&nbsp;</span>
+        <a [routerLink]="['/search']">FactGrid</a>
+      </div>
+    </div>
+  </div>
+
+  <mat-card appearance="outlined" class="mat-elevation-z12">
+    <mat-card-content class="cardBackground">
+
+      <div class="labelTitlePadding">
+        <mat-form-field appearance="outline">
+          <input matInput (keyup)="applyFilter($event)" placeholder="Search">
+        </mat-form-field>
+        <span class="filtered-count" style="margin-left: 1rem;">
+          {{ dataSource.filteredData?.length || 0 }} / {{ dataSource.data?.length || 0 }}
+        </span>
+      </div>
+
+      <div class="mobile-sort-buttons" *ngIf="isMobile">
+        <button *ngFor="let col of displayedColumns"
+                mat-button
+                (click)="setSort(col)"
+                [color]="sort?.active === col ? 'primary' : undefined"
+                class="sort-btn">
+          {{ getHeaderLabel(col) }}
+          <mat-icon *ngIf="sort?.active === col">
+            {{ sort?.direction === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+          </mat-icon>
+        </button>
+      </div>
+
+      @if (isSpinner) {
+      <div style="text-align: center;">
+        <mat-progress-spinner mode="indeterminate"
+                              color="primary"
+                              diameter="50"
+                              style="margin: 2rem auto; display: block;">
+        </mat-progress-spinner>
+        <div class="loading-message" style="margin-top: 1rem; color: rgba(0, 0, 0, 0.7);">
+          {{ loadingMessage }}
+        </div>
+      </div>
+      }
+
+      @if (!isSpinner) {
+      <div class="mat-elevation-z8 container">
+        <table mat-table class="mat-table"
+               [dataSource]="dataSource"
+               matSort
+               matSortActive="title"
+               matSortDirection="asc">
+
+          @for (column of displayedColumns; track column) {
+          <ng-container [matColumnDef]="column">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{ getHeaderLabel(column) }}
+            </th>
+            <td mat-cell *matCellDef="let element"
+                class="responsive-cell"
+                [attr.data-label]="getHeaderLabel(column)">
+              @switch (column) {
+              @case ('author') {
+              @if (element.author) {
+              @if (element.author?.id) {
+              <span class="item-link"
+                    [class.clicked]="clickedItemId === element.author.id"
+                    (click)="onItemClick(element.author.id)">
+                {{ element.author.label }}
+              </span>
+              } @else {
+              {{ element.author.label }}
+              }
+              } @else {
+              <span class="text-muted">[Inconnu]</span>
+              }
+              }
+              @case ('title') {
+              @if (element.title) {
+              @if (element.title?.id) {
+              <span class="item-link"
+                    [class.clicked]="clickedItemId === element.title.id"
+                    (click)="onItemClick(element.title.id)">
+                {{ element.title.label }}
+              </span>
+              } @else {
+              {{ element.title.label }}
+              }
+              } @else {
+              <span class="text-muted">[Inconnu]</span>
+              }
+              }
+              @case ('location') {
+              @if (element.location) {
+              @if (element.location?.id) {
+              <span class="item-link"
+                    [class.clicked]="clickedItemId === element.location.id"
+                    (click)="onItemClick(element.location.id)">
+                {{ element.location.label }}
+              </span>
+              } @else {
+              {{ element.location.label }}
+              }
+              } @else {
+              <span class="text-muted">[Inconnu]</span>
+              }
+              }
+              @case ('date') {
+              <span>{{ element.date.value }}</span>
+              }
+              @default {
+              <span>{{ element[column] }}</span>
+              }
+              }
+            </td>
+          </ng-container>
+          }
+
+          <tr mat-header-row class="mat-header-row" *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let biblio; columns: displayedColumns" class="responsive-row"></tr>
+        </table>
+
+        <mat-paginator #paginator
+                       class="demo-paginator"
+                       (page)="handlePageEvent($event)"
+                       [length]="length"
+                       [pageSize]="pageSize"
+                       [pageIndex]="pageIndex"
+                       [disabled]="disabled"
+                       [showFirstLastButtons]="showFirstLastButtons"
+                       [pageSizeOptions]="showPageSizeOptions ? pageSizeOptions : []"
+                       [hidePageSize]="hidePageSize"
+                       aria-label="Select page">
+        </mat-paginator>
+      </div>
+      }
+
+      @if (!isSpinner && isLoadingBatch) {
+      <div style="text-align: center; margin: 0.5rem 0;">
+        <div style="margin-top: 1rem; color: rgba(0, 0, 0, 0.7); font-size: 0.9rem;">
+          {{ loadingBatchMessage }}
+        </div>
+        <mat-progress-bar mode="indeterminate" style="width: 100%; max-width: 400px; margin: 0.5rem auto;"></mat-progress-bar>
+      </div>
+      }
+
+      <div>
+        <span>
+          <button mat-icon-button color="primary" class="internalLink" #content (click)="onClick(this.dataSource.filteredData)">
+            <mat-icon color="primary" [inline]="true">download</mat-icon>
+          </button>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </span>
+      </div>
+
+    </mat-card-content>
+  </mat-card>

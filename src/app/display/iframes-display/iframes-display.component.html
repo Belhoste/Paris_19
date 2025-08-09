@@ -1,0 +1,31 @@
+<mat-card-content class="cardBackground">
+  @if (iframeGroups?.length > 0) {
+  @for (group of iframeGroups; track group.property) {
+  @if (group.label) {
+  <div class="iframeTitlePadding">
+    <span class="propertyStyle">{{ group.label }}:</span>
+  </div>
+  }
+  @for (claim of group.claims; track claim.id) {
+  <!-- Display qualifiers if present -->
+  @if (claim.qualifiers2?.length > 0) {
+  @for (qualif of claim.qualifiers2; track qualif.id) {
+  @if (qualif.label && qualif.display?.length > 0) {
+  @for (d of qualif.display; track d.id) {
+  @if (d.label) {
+  <div class="iFrameComment">
+    {{ qualif.label }}: {{ d.label }}
+  </div>
+  }
+  }
+  }
+  }
+  }
+  <!-- Display the iframe for each claim -->
+  <iframe style="width: 100%; height: 100vh; border: none;"
+          [src]="sanitize(claim.mainsnak?.datavalue?.value)">
+  </iframe>
+  }
+  }
+  }
+</mat-card-content>
