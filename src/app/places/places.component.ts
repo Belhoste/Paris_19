@@ -142,6 +142,7 @@ export class PlacesComponent implements OnInit {
       */
 
     console.log(this.selectedItemsList);
+    console.log(this.labels);
 
 
     // Nouveau flux: une seule chaîne RxJS, distinctUntilChanged et un seul debounce suffisent.

@@ -1,0 +1,15 @@
+{
+  // Masquer les décorations diff dans la gouttière
+  "scm.diffDecorations": "none",
+  "scm.diffDecorationsGutterWidth": 1,
+
+  // Désactiver les annotations bruyantes GitLens
+  "gitlens.currentLine.enabled": false,
+  "gitlens.lineAnnotations.enabled": "off",
+  "gitlens.codeLens.enabled": false,
+  "gitlens.blame.line.enabled": false,
+  "gitlens.heatmap.enabled": false,
+
+  // Garder les hovers possibles (optionnel)
+  "gitlens.hovers.currentLine.over": "line"
+}

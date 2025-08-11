@@ -1117,19 +1117,4 @@ button.mat-icon-button .mat-icon {
 
 
 
-/* --- Stabilisation du layout ---
-  Empêche le léger recalage horizontal quand la zone de résultats provoque l'apparition
-  d'une scrollbar verticale :
-  - scrollbar-gutter (Chrome/Edge/Firefox récents) réserve l'espace.
-  - overflow-y: scroll (fallback) force la présence de la scrollbar même sans contenu.
-*/
-html { scrollbar-gutter: stable both-edges; }
-body { overflow-y: scroll; }
-
-
-
-
-
-
-
 
