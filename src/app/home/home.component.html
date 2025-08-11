@@ -1,66 +1,53 @@
 <div class="cardBackground">
   <div class="home-header">
-    <div class="home-title">Harmonia Universalis</div>
+    <div class="home-title">Paris 19</div>
     <div class="home-subtitle">{{ home_subtitle }}</div>
   </div>
 
  <div class="home-cards">
-  <!---   <mat-card-title>Base prosopographique</mat-card-title>
-   <mat-card class="home-card mat-elevation-z4">
-      <mat-card-content>
-        Accédez à la base de données des personnes liées au magnétisme animal.
-      </mat-card-content>
-      <mat-card-actions>
-        <button mat-raised-button color="primary" routerLink="/prosopography">
-          Prosopographie
-        </button>
-      </mat-card-actions>
-    </mat-card>
-  --->
-
-
-     <mat-card class="home-card mat-elevation-z4">
-       <mat-card-title>{{animalMagnetism}}</mat-card-title>
+ 
+  <mat-card class="home-card mat-elevation-z4 clickable" routerLink="/places" tabindex="0" role="link" [attr.aria-label]="places + ' – ' + searchOnPlaces">
+       <mat-card-title>{{places}}</mat-card-title>
        <mat-card-content>
-         {{searchOnAnimalMagnetism}}.
+          <div class="card-image-row">
+            <picture class="card-image-left">
+              <!-- Source WebP (désactivée tant que les fichiers ne sont pas générés)
+              <source type="image/webp" srcset="assets/Rue_Coq-Héron@1x.webp 1x, assets/Rue_Coq-Héron@2x.webp 2x"> -->
+              <!-- Image JPEG actuelle (fallback) -->
+              <img src="assets/Rue_Coq-Héron.jpg" width="96" height="89" alt="Rue Coq-Héron – illustration" class="card-image" loading="lazy" decoding="async" />
+            </picture>
+            <div class="card-image-text">{{searchOnPlaces}}.</div>
+          </div>
        </mat-card-content>
-       <mat-card-actions>
-         <button mat-raised-button color="primary" routerLink="/animal_magnetism">
-           {{search}}
-         </button>
-       </mat-card-actions>
      </mat-card>
 
-     <mat-card class="home-card mat-elevation-z4">
-       <mat-card-title>{{bibliography}}</mat-card-title>
+  <mat-card class="home-card mat-elevation-z4 clickable" routerLink="/people" tabindex="0" role="link" [attr.aria-label]="people + ' – ' + searchOnPeople">
+       <mat-card-title>{{people}}</mat-card-title>
        <mat-card-content>
-         {{searchOnBibliography}}.
+         <div class="card-image-row">
+           <img src="assets/Daumier_croquis_parisiens.jpg" alt="Croquis parisiens" class="card-image card-image-left" />
+           <div class="card-image-text">{{searchOnPeople}}.</div>
+         </div>
        </mat-card-content>
-       <mat-card-actions>
-         <button mat-raised-button color="primary" routerLink="/bibliography">
-           {{search}}
-         </button>
-       </mat-card-actions>
      </mat-card>
 
-     <mat-card class="home-card mat-elevation-z4">
+  <mat-card class="home-card mat-elevation-z4 clickable" routerLink="/search" tabindex="0" role="link" [attr.aria-label]="'FactGrid – ' + searchOnFactGrid">
        <mat-card-title>FactGrid</mat-card-title>
        <mat-card-content>
-         {{searchOnFactGrid}}.
+         <div class="card-image-row">
+           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/FactGrid-Logo.png/289px-FactGrid-Logo.png"
+             class="card-image card-image-left logo-image" alt="FactGrid Logo" />
+           <div class="card-image-text">{{searchOnFactGrid}}.</div>
+         </div>
        </mat-card-content>
-       <mat-card-actions>
-         <button mat-raised-button color="primary" routerLink="/search">
-           {{search}}
-         </button>
-       </mat-card-actions>
      </mat-card>
 </div>
 
     <!-- Bloc image sous les cartes, bien aligné -->
     <div class="home-image-card">
       <mat-card class="mat-elevation-z2">
-        <img src="assets/magnetisme.jpg" alt="Animal magnetism illustration" class="home-image desktop-image" />
-        <img src="assets/magnetisme_mobile.jpg" alt="Animal magnetism mobile" class="home-image mobile-image" />
+        <img src="assets/Paris_Pont-Neuf.jpg" alt="Paris illustration" class="home-image desktop-image" />
+        <img src="assets/Paris_Pont-Neuf_mobile.jpg" alt="Paris illustration mobile" class="home-image mobile-image" />
         <mat-card-content>
           <div class="image-caption">
             Illustration sur le magnétisme animal (source : domaine public)

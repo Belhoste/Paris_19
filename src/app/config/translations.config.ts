@@ -236,13 +236,13 @@ export const TRANSLATIONS = {
     zh: "首页"
   },
   home_subtitle: {
-    de: "eine Datenbank über Tiermagnetismus",
-    fr: "une base de données sur le magnétisme animal",
-    es: "una base de datos sobre el magnetismo animal",
-    it: "una banca dati sul magnetismo animale",
-    en: "a database on animal magnetism",
-    hu: "állati mágnesességről szóló adatbázis",
-    zh: "动物磁性数据库"
+    de: "eine Datenbank über das Paris des 19. Jahrhundert",
+    fr: "une base de données sur le Paris du 19e siècle",
+    es: "una base de datos sobre el París del siglo XIX",
+    it: "una banca dati sul Paris del XIX secolo",
+    en: "a database on 19th century Paris",
+    hu: "19. századi Párizsról szóló adatbázis",
+    zh: "19世纪巴黎的数据库"
   },
   instancesListTitle: {
     de: "Instanzen (Limit: 200):",
@@ -371,6 +371,24 @@ export const TRANSLATIONS = {
     en: "Patients",
     zh: "病人"
   },
+  people:{
+    fr: "Les gens",
+    de: "Die Leute",
+    es: "La gente",
+    it: "La gente",
+    hu: "Az emberek",
+    en: "People",
+    zh: "人们"
+  },
+  places:{
+    fr: "Les lieux",
+    de: "Die Orte",
+    es: "Los lugares",
+    it: "I luoghi",
+    hu: "A helyek",
+    en: "Places",
+    zh: "地方"
+  },
   prefix1: {
     de: "Klassenhierarchie: abhängige Klasse von ",
     fr: "hiérarchie des classes: classe dépendante de ",
@@ -446,23 +464,23 @@ export const TRANSLATIONS = {
     en: "Search",
     zh: "搜索"
   },
-  searchOnAnimalMagnetism: {
-    de: "Recherchieren Sie zum Thema Tiermagnetismus",
-    fr: "Effectuez une recherche sur le magnétisme animal",
-    es: "Hacer una búsqueda sobre el magnetismo animal",
-    it: "Fare una ricerca sul magnetismo animale",
-    hu: "Kutatás az állati mágnesességről",
-    en: "Do a search on animal magnetism",
-    zh: "进行动物磁性搜索"
+  searchOnPlaces: {
+    de: "Recherchieren Sie zu Orten",
+    fr: "Effectuez une recherche sur les lieux",
+    es: "Hacer una búsqueda sobre los lugares",
+    it: "Fare una ricerca sui luoghi",
+    hu: "Kutatás a helyszíneken",
+    en: "Do a search on places",
+    zh: "进行地点搜索"
   },
-  searchOnBibliography: {
-    fr: "Consultez la bibliographie Harmonia Universalis",
-    de: "Durchsuchen Sie die Harmonia Universalis Bibliographie",
-    es: "Consulte la bibliografía Harmonia Universalis",
-    it: "Consulta la bibliografia Harmonia Universalis",
-    hu: "Harmonia Universalis bibliográfia megtekintése",
-    en: "Consult the Harmonia Universalis bibliography",
-    zh: "查阅 Harmonia Universalis 书目"
+  searchOnPeople: {
+    fr: "Effectuez une recherche sur les personnes",
+    de: "Recherchieren Sie zu Personen",
+    es: "Hacer una búsqueda sobre las personas",
+    it: "Fare una ricerca sulle persone",
+    hu: "Kutatás az embereken",
+    en: "Do a search on people",
+    zh: "进行人物搜索"
   },
   searchOnFactGrid: {
     fr: "Effectuez une recherche sur l'ensemble de la base FactGrid",

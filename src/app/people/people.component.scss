@@ -1,0 +1,44 @@
+
+
+.search-container {
+  display: flex;
+  flex-direction: column;
+ 
+}
+
+.HU-div { // box styling the factgrid title
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+  
+.HUTitle-div {  //font of the title Harmonia Universalis
+    padding-left:10px;
+    color:#AD1457;
+    font-weight: 600;
+    font-size: 60px;
+  }
+
+.search-label { // style of the labels of the items
+  font-weight: bold;
+}
+
+.search-itemSelected { // put a margin on top of the box of selected items
+  margin-top: 50px;
+}
+
+
+
+//style the card of selected items
+
+ 
+
+.selectedItemSize {
+   font-size: 14px;
+}
+
+
+
+
+

@@ -274,26 +274,25 @@ html, body {
 }
 
 .cardBackground {
-  height: fit-content;
-  margin-left: 12px;
-  margin-right: 0;
-  max-width: 100%; // ou supprimez cette ligne
-  width: 95%;
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
   text-align: left;
-  padding-left: 30px; // marge intérieure à gauche
-  padding-right: 24px; // optionnel, pour équilibrer à droite
+  height: fit-content;
 }
-
 
 @media screen and (max-width: 959.98px) {
   .cardBackground {
-    height: fit-content;
-    margin-right: 2px;
-    margin-left: 2px;
-    padding-left: 8px;
-    padding-right: 8px;
+    width: 100%;
+    max-width: 100vw;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
 }
+
 .listStyle{  // for styling the list of statements in a section
     padding-left: 30px;
 }
@@ -1111,6 +1110,21 @@ button.mat-icon-button .mat-icon {
   .separatorStyle {
     margin-left: 1em; // ou la valeur qui convient, par exemple 8px ou 16px
   }
+
+
+
+
+
+
+
+/* --- Stabilisation du layout ---
+  Empêche le léger recalage horizontal quand la zone de résultats provoque l'apparition
+  d'une scrollbar verticale :
+  - scrollbar-gutter (Chrome/Edge/Firefox récents) réserve l'espace.
+  - overflow-y: scroll (fallback) force la présence de la scrollbar même sans contenu.
+*/
+html { scrollbar-gutter: stable both-edges; }
+body { overflow-y: scroll; }
 
 
 

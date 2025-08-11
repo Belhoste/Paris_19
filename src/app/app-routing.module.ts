@@ -23,8 +23,8 @@ const routes: Routes = [
   children: [{ path: ':lat/:lng/:z', component:MapComponent}
   ]
   },
-  { path: 'bibliography', loadComponent: () => import('./bibliography/bibliography.component').then(mod => mod.BibliographyComponent) },
-  { path: 'animal_magnetism', loadComponent: () => import('./animal-magnetism/animal-magnetism.component').then(mod => mod.AnimalMagnetismComponent) },
+  { path: 'people', loadComponent: () => import('./people/people.component').then(mod => mod.PeopleComponent) },
+  { path: 'places', loadComponent: () => import('./places/places.component').then(mod => mod.PlacesComponent) },
   { path: 'advanced_search', loadComponent: () => import('./search/advanced-search/advanced-search.component').then(mod => mod.AdvancedSearchComponent) }
 
 ]
