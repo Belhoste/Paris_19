@@ -54,9 +54,10 @@ export class SearchComponent implements OnInit {
     subTitle:string = "a database on animal magnetism";
     advanced_search:string = "advanced search";
     projects:string = "research projects";
-    fields: string = "fields of reserach";
-    bibliography: string = "bibliography";
+    fields: string = "fields of reseach";
+    places: string = "places";
     home_page: string = "Home";
+    people: string = "People";
 
     searchInput = new FormControl();
 
@@ -87,7 +88,9 @@ export class SearchComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.bibliography = this.lang.getTranslation('bibliography', this.lang.selectedLang);
+    this.places = this.lang.getTranslation('places', this.lang.selectedLang);
+
+    this.people = this.lang.getTranslation('people', this.lang.selectedLang);
 
     this.home_page = this.lang.getTranslation('home_page', this.lang.selectedLang);
 

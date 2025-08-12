@@ -12,4 +12,38 @@
 
   // Garder les hovers possibles (optionnel)
   "gitlens.hovers.currentLine.over": "line"
+  ,
+  // Masquer les pastilles / couleurs de l'explorateur
+  "explorer.decorations.colors": false,
+  "explorer.decorations.badges": false,
+  // Désactiver totalement les décorations Git (icônes de statut) dans l'explorateur
+  "git.decorations.enabled": false
+  ,
+  // Désactiver badges / couleurs sur les onglets (éditeur)
+  "workbench.editor.decorations.badges": false,
+  "workbench.editor.decorations.colors": false,
+  // Réduire colorisations avancées susceptibles de prêter à confusion
+  "editor.bracketPairColorization.enabled": false,
+  "editor.semanticHighlighting.enabled": false
+  ,
+  // Désactiver autres surbrillances internes
+  "editor.selectionHighlight": false,
+  "editor.occurrencesHighlight": "off",
+  "editor.inlayHints.enabled": "off",
+  "editor.renderLineHighlight": "none",
+  // Neutraliser les fonds verts/rouges même en cas d'ouverture accidentelle d'un diff
+  "workbench.colorCustomizations": {
+    "diffEditor.insertedLineBackground": "#00000000",
+    "diffEditor.removedLineBackground": "#00000000",
+    "diffEditor.insertedTextBackground": "#00000000",
+    "diffEditor.removedTextBackground": "#00000000"
+  },
+  // Ouvrir le fichier direct (pas la vue diff) quand on clique dans Contrôle de code source
+  "git.openDiffOnClick": false
+  ,
+  // Désactiver sticky scroll et navigation de diff incrustée
+  "editor.stickyScroll.enabled": false,
+  "diffEditor.codeLens": false,
+  "diffEditor.showMoveAnnotations": false,
+  "diffEditor.hideUnchangedRegions.enabled": false
 }

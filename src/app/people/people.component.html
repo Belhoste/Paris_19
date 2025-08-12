@@ -1,10 +1,10 @@
   <div class="cardBackground">
   <div class="prosopo-header">
     <div class="prosopo-title">
-      Harmonia Universalis
+      Paris 19
     </div>
     <div class="prosopo-subtitle">
-      {{ animalMagnetism_subtitle }}
+      {{ subTitle }}
     </div>
   </div>
   <mat-card appearance="outlined" class=mat-elevation-z12>
@@ -12,11 +12,66 @@
       <div>
         <div class="search-center2">
           <mat-form-field>
-            <input matInput placeholder="Ex. Goethe" value="Goethe" [formControl]="searchInput">
+            <input matInput placeholder="Ex. Goethe" [formControl]="searchInput"
+                   [matTooltip]="minLengthTooltip" matTooltipPosition="above"
+                   [matTooltipDisabled]="(searchInput.value || '').length >= minTermLength">
           </mat-form-field>
           <div *ngIf="warningMessage" class="warning">
             {{ warningMessage }}
           </div>
+        </div>
+        <!-- Liens de navigation déplacés ici -->
+        <div class="search-center router-links top-links">
+          <a [routerLink]="['']">{{home_page}}</a> <span>&nbsp;|&nbsp;</span>
+          <a [routerLink]="['/places']">{{places}}</a> <span>&nbsp;|&nbsp;</span>
+          <a [routerLink]="['/search']">FactGrid</a> <span>&nbsp;|&nbsp;</span>
+          <a href="https://database.factgrid.de/query/#%23model%0A%0ASELECT%20%3Fitem%20%3Fviewer%20%3FitemLabel%20%20WHERE%20%7B%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22%5BAUTO_LANGUAGE%5D%2Cen%22.%20%7D%0A%20%20%3Fitem%20wdt%3AP2%20wd%3AQ7%3B%0A%20%20%20%20%20%20%20%20wdt%3AP247%20wd%3AQ24708.%0A%20%20BIND%28STRAFTER%28STR%28%3Fitem%29%2C%20STR%28wd%3A%29%29%20AS%20%3FitemId%29%0A%20%20BIND%28IRI%28CONCAT%28%22https%3A%2F%2Fdatabase.factgrid.de%2Fviewer%2Fitem%2F%22%2C%20%3FitemId%29%29%20AS%20%3Fviewer%29%0A%7D%0A">Sparql query</a>
+        </div>
+        <!-- Mode simple: filtres + toggle AND/OR -->
+        <div class="filter-chips" *ngIf="availableFilters.length && !advancedMode">
+          <button mat-stroked-button type="button"
+                  *ngFor="let f of availableFilters"
+                  (click)="toggleFilter(f)"
+                  [class.inactive-filter]="!isFilterSelected(f)"
+                  [class.active-filter]="isFilterSelected(f)">
+            {{ f.label }}
+          </button>
+          <mat-slide-toggle class="logic-toggle" (change)="toggleCombineMode()" [checked]="combineDisjoint">
+            {{ combineDisjoint ? 'OR' : 'AND' }}
+          </mat-slide-toggle>
+        </div>
+        <div class="advanced-mode-btn" *ngIf="!advancedMode && availableFilters.length">
+          <button mat-stroked-button color="primary" type="button" (click)="toggleAdvancedMode()">Mode avancé</button>
+        </div>
+
+        <!-- Mode avancé: groupes (DNF) -->
+        <div class="advanced-groups" *ngIf="advancedMode">
+          <div class="advanced-mode-btn top">
+            <button mat-stroked-button color="primary" type="button" (click)="toggleAdvancedMode()">Mode simple</button>
+          </div>
+          <div class="groups-row">
+            <div class="group-card" *ngFor="let g of advancedGroups; trackBy: trackGroup">
+              <span class="group-badge" matTooltip="Groupe OR #{{ g.id }} (AND interne)">{{ g.id }}</span>
+              <button class="group-close" mat-icon-button type="button" aria-label="Supprimer" (click)="removeGroup(g.id)" *ngIf="advancedGroups.length > 1">
+                <mat-icon>close</mat-icon>
+              </button>
+              <div class="group-filters" matTooltip="Tous les filtres cochés ici sont combinés en AND">
+                <button mat-stroked-button type="button"
+                        *ngFor="let f of availableFilters"
+                        (click)="toggleFilterInGroup(g, f.key)"
+                        [class.active-filter]="groupHas(g, f.key)"
+                        [class.inactive-filter]="!groupHas(g, f.key)">
+                  {{ f.label }}
+                </button>
+              </div>
+            </div>
+            <div class="group-card add-card" matTooltip="Ajouter un groupe (OR)">
+              <button mat-icon-button type="button" aria-label="Ajouter" (click)="addGroup()">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+          </div>
+          <div class="expression-summary" *ngIf="expressionSummary">{{ expressionSummary }}</div>
         </div>
       </div>
     </mat-card-content>
@@ -44,16 +99,6 @@
 
       @if (isDisplay == false) {
       <div>
-        <div class="search-center router-links">
-          <a [routerLink]="['']">{{home_page}}</a> <span>&nbsp;|&nbsp;</span>
-          <a [routerLink]="['/bibliography']">{{bibliography}}</a> <span>&nbsp;|&nbsp;</span>
-          <a [routerLink]="['/search']">FactGrid</a> <span>&nbsp;|&nbsp;</span>
-          <a href="https://database.factgrid.de/query/#%23model%0A%0ASELECT%20%3Fitem%20%3Fviewer%20%3FitemLabel%20%20WHERE%20%7B%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22%5BAUTO_LANGUAGE%5D%2Cen%22.%20%7D%0A%20%20%3Fitem%20wdt%3AP2%20wd%3AQ7%3B%0A%20%20%20%20%20%20%20%20wdt%3AP247%20wd%3AQ24708.%0A%20%20BIND%28STRAFTER%28STR%28%3Fitem%29%2C%20STR%28wd%3A%29%29%20AS%20%3FitemId%29%0A%20%20BIND%28IRI%28CONCAT%28%22https%3A%2F%2Fdatabase.factgrid.de%2Fviewer%2Fitem%2F%22%2C%20%3FitemId%29%29%20AS%20%3Fviewer%29%0A%7D%0A">
-            Sparql query
-          </a>
-          <!---       <a [routerLink]="['/Paris_19']">Harmonia Universalis</a> --->
-        </div>
-
         <div class="search-itemSelected">
           <mat-card appearance="outlined" class="search-itemSelected-mat-card">
             <div class="selectedListTitle2">{{formerVisitsTitle}}</div>
