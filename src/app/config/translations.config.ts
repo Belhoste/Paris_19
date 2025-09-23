@@ -19,6 +19,15 @@ export const TRANSLATIONS = {
     en: "With this activity:",
     zh: "具有此活动："
   },
+  addressesTitle: {
+    fr: "Adresses",
+    en: "Addresses",
+    de: "Adressen",
+    es: "Direcciones",
+    it: "Indirizzi",
+    hu: "Címek",
+    zh: "地址"
+  },
   addressTitle: {
     de: "An dieser Adresse wohnhaft:",
     fr: "Domicilié.e.s à cette adresse:",
@@ -27,6 +36,15 @@ export const TRANSLATIONS = {
     hu: "Ezen a címen lakó személyd:",
     en: "Residing at this address:",
     zh: "居住在此地址："
+  },
+  advanced_mode: {
+    fr: "Mode avancé",
+    en: "Advanced mode",
+    de: "Erweiterter Modus",
+    es: "Modo avanzado",
+    it: "Modalità avanzata",
+    hu: "Haladó mód",
+    zh: "高级模式"
   },
   advanced_search: {
     de: "erweiterte Suche",
@@ -85,7 +103,7 @@ export const TRANSLATIONS = {
   clickToDisplay: {
     de: "Klicken Sie zum Anzeigen",
     fr: "cliquez pour afficher",
-    es: "haga clic pour mostrar",
+    es: "haga clic para mostrar",
     hu: "kattintson a megtekintéshezr",
     it: "fare clic per visualizzare",
     en: "click to display",
@@ -100,6 +118,24 @@ export const TRANSLATIONS = {
     en: "click to download",
     zh: "点击下载"
   },
+  combination_all: {
+    fr: "Tous les filtres sélectionnés doivent correspondre (logique AND)",
+    en: "All selected filters must match (AND logic)",
+    de: "Alle ausgewählten Filter müssen zutreffen (AND Logik)",
+    es: "Todos los filtros seleccionados deben coincidir (lógica AND)",
+    it: "Tutti i filtri selezionati devono corrispondere (logica AND)",
+    hu: "Minden kijelölt szűrőnek egyeznie kell (AND logika)",
+    zh: "所有选定筛选条件都需匹配 (AND 逻辑)"
+  },
+  combination_any: {
+    fr: "Au moins un filtre doit correspondre (logique OR)",
+    en: "At least one filter must match (OR logic)",
+    de: "Mindestens ein Filter muss zutreffen (OR Logik)",
+    es: "Al menos un filtro debe coincidir (lógica OR)",
+    it: "Almeno un filtro deve corrispondere (logica OR)",
+    hu: "Legalább egy szűrőnek egyeznie kell (OR logika)",
+    zh: "至少一个筛选条件需匹配 (OR 逻辑)"
+  },
   contextTitle: {
     de: "In diesem Kontext anwesend:",
     fr: "Présents dans ce contexte:",
@@ -112,7 +148,7 @@ export const TRANSLATIONS = {
   currentAddress: {
     de: "Aktuelle Adresse:",
     fr: "Adresse actuelle :",
-    es: "Dirección actual:",
+    es: "Dirección currente:",
     it: "Indirizzo attuale:",
     hu: "Jelenlegi cím:",
     en: "Current address:",
@@ -135,6 +171,15 @@ export const TRANSLATIONS = {
     it: "Collegamenti esterni",
     en: "external links",
     zh: "外部链接"
+  },
+  FactGrid_subtitle: {
+    de: "eine Datenbank für Historiker*innen",
+    fr: "une base de données pour historien.nes",
+    es: "una base de datos para historiadores",
+    it: "un database per gli storici",
+    hu: "egy adatbázis történészeknek",
+    en: "a database for historians",
+    zh: "历史学家的数据库"
   },
   factGridQuery: {
     de: "FactGrid Abfrage",
@@ -289,6 +334,15 @@ export const TRANSLATIONS = {
     en: "List",
     zh: "列表"
   },
+  loadingBatchMessage: {
+    de: "Lade zusätzlicher Daten...",
+    fr: "Chargement des données supplémentaires...",
+    es: "Cargando datos adicionales...",
+    it: "Caricamento di dati aggiuntivi...",
+    hu: "További adatok betöltése...",
+    en: "Loading additional data...",
+    zh: "加载更多数据..."
+  },
   loadingMessage: {
     de: "Lade ersten Daten...",
     fr: "Chargement des premières données...",
@@ -297,16 +351,6 @@ export const TRANSLATIONS = {
     hu: "Első adatok betöltése...",
     en: "Loading first data...",
     zh: "加载初始数据..."
-  },
-
-   loadingBatchMessage: {
-     de: "Lade zusätzlicher Daten...",
-    fr: "Chargement des données supplémentaires...",
-    es: "Cargando datos adicionales...",
-    it: "Caricamento di dati aggiuntivi...",
-    hu: "További adatok betöltése...",
-    en: "Loading additional data...",
-    zh: "加载更多数据..."
   },
   locationHeader: {
     de: "Ort",
@@ -325,6 +369,24 @@ export const TRANSLATIONS = {
     it: "pagina principale",
     en: "main page",
     zh: "主页"
+  },
+   Marville_map_text:{
+   fr:"Découvrez les photographies de Paris prises par Charles Marville (1865-1870)",
+   de:"Entdecken Sie die Fotografien von Paris, aufgenommen von Charles Marville (1865-1870)",
+   es:"Descubra las fotografías de París tomadas por Charles Marville (1865-1870)",
+   hu:"Fedezze fel Charles Marville (1865-1870) által készített párizsi fényképeket!",
+   it:"Scoprite le fotografie di Parigi scattate da Charles Marville (1865-1870)",
+   en:"Discover photographs of Paris taken by Charles Marville (1865-1870)",
+   zh:"探索查尔斯·马尔维尔拍摄的巴黎照片（1865-1870)"
+  },
+  Marville_Paris:{
+   fr:"Paris vu par Marville",
+   de:"Paris aus der Sicht von Marville",
+   es:"París visto por Marville",
+   hu:"Párizs Marville szemével",
+   it:"Parigi vista da Marville",
+   en:"Paris as seen by Marville",
+   zh:"马维尔眼中的巴黎"
   },
   natureOfListTitle: {
     de: "Instanz von ",
@@ -372,20 +434,29 @@ export const TRANSLATIONS = {
     zh: "病人"
   },
   people:{
-    fr: "Les gens",
-    de: "Die Leute",
-    es: "La gente",
-    it: "La gente",
-    hu: "Az emberek",
+    fr: "Les\u00A0gens",
+    de: "Die\u00A0Leute",
+    es: "La\u00A0gente",
+    it: "La\u00A0gente",
+    hu: "Az\u00A0emberek",
     en: "People",
     zh: "人们"
   },
+  pictures: {
+    fr: "Les\u00A0images",
+    en:"Pictures",
+    de: "Die\u00A0Bilder",
+    es: "Las\u00A0imágenes",
+    it: "I\u00A0immagini",
+    hu: "A\u00A0képek",
+    zh: "图片"
+  },
   places:{
-    fr: "Les lieux",
-    de: "Die Orte",
-    es: "Los lugares",
-    it: "I luoghi",
-    hu: "A helyek",
+    fr: "Les\u00A0lieux",
+    de: "Die\u00A0Orte",
+    es: "Los\u00A0lugares",
+    it: "I\u00A0luoghi",
+    hu: "A\u00A0helyek",
     en: "Places",
     zh: "地方"
   },
@@ -407,26 +478,6 @@ export const TRANSLATIONS = {
     en: "Class hierarchy: class with ",
     zh: "类层次结构：具有 "
   },
-  projects: {
-    de: "Forschungsprojekten",
-    fr: "projets de recherche",
-    es: "proyectos de investigación",
-    it: "progetti di ricerca",
-    en: "research projects",
-    hu: "kutatási projektek",
-    zh: "研究项目"
-  },
-
-  projectSearch: {
-    de: "Suche einen Projekt",
-    fr: "Rechercher un projet",
-    es: "Buscar un proyecto",
-    it: "Cerca un progetto",
-    en: "Search a project",
-    hu: "Projekt keresése",
-    zh: "搜索项目"
-  },
-
   projectName: {
     de: "Projektname",
     fr: "Nom du projet",
@@ -436,7 +487,24 @@ export const TRANSLATIONS = {
     en: "Project name",
     zh: "项目名称"
   },
-
+  projectSearch: {
+    de: "Suche einen Projekt",
+    fr: "Rechercher un projet",
+    es: "Buscar un proyecto",
+    it: "Cerca un progetto",
+    en: "Search a project",
+    hu: "Projekt keresése",
+    zh: "搜索项目"
+  },
+  projects: {
+    de: "Forschungsprojekten",
+    fr: "projets de recherche",
+    es: "proyectos de investigación",
+    it: "progetti di ricerca",
+    en: "research projects",
+    hu: "kutatási projektek",
+    zh: "研究项目"
+  },
   pupilTitle: {
     de: "Schüler/innen",
     fr: "Élèves et disciples",
@@ -464,24 +532,6 @@ export const TRANSLATIONS = {
     en: "Search",
     zh: "搜索"
   },
-  searchOnPlaces: {
-    de: "Recherchieren Sie zu Orten",
-    fr: "Effectuez une recherche sur les lieux",
-    es: "Hacer una búsqueda sobre los lugares",
-    it: "Fare una ricerca sui luoghi",
-    hu: "Kutatás a helyszíneken",
-    en: "Do a search on places",
-    zh: "进行地点搜索"
-  },
-  searchOnPeople: {
-    fr: "Effectuez une recherche sur les personnes",
-    de: "Recherchieren Sie zu Personen",
-    es: "Hacer una búsqueda sobre las personas",
-    it: "Fare una ricerca sulle persone",
-    hu: "Kutatás az embereken",
-    en: "Do a search on people",
-    zh: "进行人物搜索"
-  },
   searchOnFactGrid: {
     fr: "Effectuez une recherche sur l'ensemble de la base FactGrid",
     de: "Recherchieren Sie in der gesamten FactGrid-Datenbank",
@@ -490,6 +540,33 @@ export const TRANSLATIONS = {
     hu: "Kutatás a FactGrid adatbázisban",
     en: "Do a search in the entire FactGrid database",
     zh: "在整个 FactGrid 数据库中进行搜索"
+  },
+  searchOnImages: {
+    fr: "Parcourir les images de Paris",
+    en: "Browse images of Paris",
+    de: "Bilder von Paris durchsuchen",
+    es: "Explorar imágenes de París",
+    it: "Sfoglia immagini di Parigi",
+    hu: "Párizs képeinek böngészése",
+    zh: "浏览巴黎图片"
+  },
+  searchOnPeople: {
+    fr: "Effectuez une recherche sur les personnes",
+    de: "Recherchieren Sie zu Personen",
+    es: "Hacer une búsqueda sobre las personas",
+    it: "Fare une ricerca sulle persone",
+    hu: "Kutatás az embereken",
+    en: "Do a search on people",
+    zh: "进行人物搜索"
+  },
+  searchOnPlaces: {
+    de: "Recherchieren Sie zu Orten",
+    fr: "Effectuez une recherche sur les lieux",
+    es: "Hacer una búsqueda sobre los lugares",
+    it: "Fare une ricerca sui luoghi",
+    hu: "Kutatás a helyszíneken",
+    en: "Do a search on places",
+    zh: "进行地点搜索"
   },
   setTitle: {
     de: "Erhalten:",
@@ -508,6 +585,24 @@ export const TRANSLATIONS = {
     hu: "Megjegyzés megjelenítése",
     en: "Show notice",
     zh: "显示通知"
+  },
+  showPicture:{
+    de: "Bild ansehen",
+    fr: "Voir l'image",
+    es: "Ver la imagen",
+    it: "Vedi l'immagine",
+    hu: "Kép megtekintése",
+    en: "See the image",
+    zh: "查看图片"
+  }, 
+  simple_mode: {
+    fr: "Mode simple",
+    en: "Simple mode",
+    de: "Einfacher Modus",
+    es: "Modo simple",
+    it: "Modalità semplice",
+    hu: "Egyszerű mód",
+    zh: "简易模式"
   },
   stemma: {
     de: "Stemma_aufwärts",
@@ -536,15 +631,6 @@ export const TRANSLATIONS = {
     en: "Subclasses:",
     zh: "子类："
   },
-  FactGrid_subtitle: {
-    de: "eine Datenbank für Historiker*innen",
-    fr: "une base de données pour historien.nes",
-    es: "una base de datos para historiadores",
-    it: "un database per gli storici",
-    hu: "egy adatbázis történészeknek",
-    en: "a database for historians",
-    zh: "历史学家的数据库"
-  },
   suffix1: {
     de: "Klassen:",
     fr: "classes:",
@@ -571,5 +657,132 @@ export const TRANSLATIONS = {
     hu: "Müvek",
     en: "Works",
     zh: "作品"
+  },
+  MARVILLE_MAP_TEXT: {
+    en: "Visualize on the map where Marville photographed 19th century Paris.",
+    fr: "Visualisez sur la carte les lieux où Marville a photographié Paris au 19e siècle.",
+    de: "Visualisieren Sie auf der Karte, wo Marville das Paris des 19. Jahrhunderts fotografierte.",
+    es: "Visualiza en el mapa dónde Marville fotografió el París del siglo XIX.",
+    it: "Visualizza sulla mappa dove Marville ha fotografato la Parigi del XIX secolo.",
+    hu: "Tekintse meg a térképen, hol fényképezte Marville a 19. századi Párizst.",
+    zh: "在地图上查看马维尔拍摄19世纪巴黎的地点。"
+  }
+
+};
+
+// Ajout des traductions pour les filtres d'occupation (People / Places)
+// Pluriels cohérents avec l'usage actuel des filtres
+export const OCCUPATION_FILTER_TRANSLATIONS = {
+  painter: {
+    fr: 'Peintres',
+    en: 'Painters',
+    de: 'Maler',
+    es: 'Pintores',
+    it: 'Pittori',
+    hu: 'Festők',
+    zh: '画家'
+  },
+  writer: {
+    fr: 'Écrivains',
+    en: 'Writers',
+    de: 'Schriftsteller',
+    es: 'Escritores',
+    it: 'Scrittori',
+    hu: 'Írók',
+    zh: '作家'
+  },
+  actor: {
+    fr: 'Comédiens',
+    en: 'Actors',
+    de: 'Schauspieler',
+    es: 'Actores',
+    it: 'Attori',
+    hu: 'Színészek',
+    zh: '演员'
+  },
+  physician: {
+    fr: 'Médecins',
+    en: 'Physicians',
+    de: 'Ärzte',
+    es: 'Médicos',
+    it: 'Medici',
+    hu: 'Orvosok',
+    zh: '医生'
+  },
+  bookseller: {
+    fr: 'Libraires',
+    en: 'Booksellers',
+    de: 'Buchhändler',
+    es: 'Libreros',
+    it: 'Librai',
+    hu: 'Könyvkereskedők',
+    zh: '书商'
+  },
+  printer: {
+    fr: 'Imprimeurs',
+    en: 'Printers',
+    de: 'Drucker',
+    es: 'Impresores',
+    it: 'Stampatori',
+    hu: 'Nyomdászok',
+    zh: '印刷工'
+  },
+  engraver: {
+    fr: 'Graveurs',
+    en: 'Engravers',
+    de: 'Graveure',
+    es: 'Grabadores',
+    it: 'Incisori',
+    hu: 'Metszők',
+    zh: '雕刻家'
+  },
+  scientist: {
+    fr: 'Savants',
+    en: 'Scientists',
+    de: 'Wissenschaftler',
+    es: 'Científicos',
+    it: 'Scienziati',
+    hu: 'Tudósok',
+    zh: '科学家'
+  }
+};
+
+// Traductions pour les filtres de lieux (Places)
+export const PLACE_FILTER_TRANSLATIONS = {
+  address: {
+    fr: 'Adresses',
+    en: 'Addresses',
+    de: 'Adressen',
+    es: 'Direcciones',
+    it: 'Indirizzi',
+    hu: 'Címek',
+    zh: '地址'
+  },
+  voie: { // terme français conservé comme clé
+    fr: 'Voies',
+    en: 'Roads',
+    de: 'Straßen',
+    es: 'Vías',
+    it: 'Vie',
+    hu: 'Utak',
+    zh: '道路'
+  },
+  building: {
+    fr: 'Bâtiments',
+    en: 'Buildings',
+    de: 'Gebäude',
+    es: 'Edificios',
+    it: 'Edifici',
+    hu: 'Épületek',
+    zh: '建筑物'
+  },
+  theatre: {
+    fr: 'Théâtres',
+    en: 'Theatres',
+    de: 'Theater',
+    es: 'Teatros',
+    it: 'Teatri',
+    hu: 'Színházak',
+    zh: '剧院'
   }
 };

@@ -29,6 +29,7 @@ import { IframesDisplayComponent } from './iframes-display/iframes-display.compo
 import { TextDisplayComponent } from './text-display/text-display.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NgIf, NgFor, NgClass } from '@angular/common';
@@ -39,6 +40,8 @@ import { CommonModule } from '@angular/common';
 import { ItemDisplayDispatcherService } from './services/item-display-dispatcher.service';
 import { RouterModule } from '@angular/router';
 import { LastSearchRouteService } from '../services/last-search-route.service'; 
+import { RequestService } from '../services/request.service';
+import { LeafletEmbedComponent } from './leaflet-embed/leaflet-embed.component';
 
 @Component({
     selector: 'app-display',
@@ -49,12 +52,14 @@ import { LastSearchRouteService } from '../services/last-search-route.service';
         MatIconModule, MatCardModule, NgFor, NgClass, TextDisplayComponent, Sparql0DisplayComponent,
         Sparql1DisplayComponent, Sparql2DisplayComponent, Sparql3DisplayComponent, Sparql4DisplayComponent,
         ItemInfoComponent, MainDisplayComponent, HeaderDisplayComponent, SociabilityDisplayComponent,
-      SourcesDisplayComponent, EducationDisplayComponent, CareerDisplayComponent, IframesDisplayComponent, JoinPipe
+  SourcesDisplayComponent, EducationDisplayComponent, CareerDisplayComponent, IframesDisplayComponent, JoinPipe, MatTooltipModule,
+  LeafletEmbedComponent
     ]
 })
 export class DisplayComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public from: string;
+  Marville_Paris: string;
 
   // Services
   private lang = inject(SelectedLangService);
@@ -71,7 +76,8 @@ export class DisplayComponent implements OnInit, AfterViewInit, OnDestroy {
   private sanitizer = inject(DomSanitizer);
   private observer = inject(BreakpointObserver);
   private itemTalk = inject(ItemTalkService);
-  private lastRoute = inject(LastSearchRouteService);
+  private lastSearchRouteService = inject(LastSearchRouteService);
+  private request = inject(RequestService);
 
   // Données principales
   item: any;
@@ -157,6 +163,9 @@ export class DisplayComponent implements OnInit, AfterViewInit, OnDestroy {
   isInfo = false;
   isMobile = false;
   isAliases = false;
+  // Carte adresses de voie
+  showStreetMap = false;
+  streetMarkers: { lat: number; lng: number; label?: string; popupHtml?: string; iconUrl?: string }[] = [];
   
 
   // Divers
@@ -181,6 +190,8 @@ export class DisplayComponent implements OnInit, AfterViewInit, OnDestroy {
   urlSafe14: string;
   urlSafe15: string;
   lastSearchRoute: string = '/search';
+  alternateRoute: string = '/search';
+  alternateRouteLabel: string = ''; // texte du bouton (Places ou People)
 
 
   // SPARQL
@@ -203,11 +214,13 @@ export class DisplayComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Textes d’interface
   home_page: string = "Home";
-  bibliography: string = "Bibliographie";
+  places: string = "Places";
+  people: string = "People";
   newSearch: string = "new search";
   linkedPagesTitle: string = "linked pages";
   mainPage: string = "main page";
   externalLinksTitle: string = "External links";
+  addressesTitle: string = "Addresses";
   formerVisitsTitle: string = "you have visited:";
   factGridQuery: string = "FactGrid query";
   clickToDisplay: string = "click to display";
@@ -227,17 +240,35 @@ export class DisplayComponent implements OnInit, AfterViewInit, OnDestroy {
     this.linkedPagesTitle = this.lang.getTranslation('linkedPagesTitle', this.lang.selectedLang);
     this.mainPage = this.lang.getTranslation('mainPage', this.lang.selectedLang);
     this.factGridQuery = this.lang.getTranslation('factGridQuery', this.lang.selectedLang);
-    this.externalLinksTitle = this.lang.getTranslation('externalLinksTitle', this.lang.selectedLang);
+  this.externalLinksTitle = this.lang.getTranslation('externalLinksTitle', this.lang.selectedLang);
+  this.addressesTitle = this.lang.getTranslation('addressesTitle', this.lang.selectedLang) || 'Addresses';
     this.formerVisitsTitle = this.lang.getTranslation('formerVisitsTitle', this.lang.selectedLang);
     this.clickToDownload = this.lang.getTranslation('clickToDownLoad', this.lang.selectedLang);
     this.clickToDisplay = this.lang.getTranslation('clickToDisplay', this.lang.selectedLang);
     this.stemma = this.lang.getTranslation('stemma', this.lang.selectedLang);
     this.home_page = this.lang.getTranslation('home_page', this.lang.selectedLang);
-    this.bibliography = this.lang.getTranslation('bibliography', this.lang.selectedLang);
+    this.places = this.lang.getTranslation('places', this.lang.selectedLang);
+    this.people = this.lang.getTranslation('people', this.lang.selectedLang);
+    this.Marville_Paris = this.lang.getTranslation('Marville_Paris', this.lang.selectedLang);
 
 
-    this.lastSearchRoute = this.lastRoute.getLastSearchRoute();
-    console.log('Route de retour utilisée :', this.lastSearchRoute); // <-- Ajoutez ceci
+    this.lastSearchRoute = this.lastSearchRouteService.getLastSearchRoute();
+    // Route alternative inverse + label
+    switch (this.lastSearchRoute) {
+      case '/people':
+        this.alternateRoute = '/places';
+        this.alternateRouteLabel = this.places;
+        break;
+      case '/places':
+        this.alternateRoute = '/people';
+        this.alternateRouteLabel = this.people;
+        break;
+      default:
+        this.alternateRoute = '/search';
+        this.alternateRouteLabel = this.newSearch; // fallback
+    }
+    // Log diagnostic
+    console.debug('[DisplayComponent] lastSearchRoute=', this.lastSearchRoute, 'alternateRoute=', this.alternateRoute, 'label=', this.alternateRouteLabel);
 
     console.log('DisplayComponent chargé');
     
@@ -308,6 +339,29 @@ export class DisplayComponent implements OnInit, AfterViewInit, OnDestroy {
       const flags = this.itemDisplayDispatcher.dispatch(this.item, this);
       Object.assign(this, flags);
 
+      // Si l'item est une voie (P2 = Q266101), charger ses adresses avec coordonnées
+      try {
+        const nature = this.claims?.P2?.[0]?.mainsnak?.datavalue?.value?.id;
+        if (nature === 'Q266101') {
+          const lang = this.lang?.selectedLang || 'fr';
+      this.request.getStreetAddresses(this.id, lang).subscribe(list => {
+            const iconUrl = this.buildAddressIconUrl();
+            this.streetMarkers = (list || []).map(it => ({
+              lat: it.lat,
+              lng: it.lng,
+              label: it.label,
+              iconUrl,
+              popupHtml: this.buildAddressPopupHtml(it.id, it.label, it.p646Raw, it.p646Label)
+            }));
+            this.showStreetMap = this.streetMarkers.length > 0;
+          });
+        } else {
+          this.showStreetMap = false; this.streetMarkers = [];
+        }
+      } catch {
+        this.showStreetMap = false; this.streetMarkers = [];
+      }
+
       // Carte
       if (this.claims.P48) {
         this.zoom = 12;
@@ -356,13 +410,12 @@ export class DisplayComponent implements OnInit, AfterViewInit, OnDestroy {
      this.iframesDisplay.setIframesDisplay(this.item, this.iframes);
      this.isIframes = this.iframes.length > 0;
 
-     this.iframeGroups = [
-     { property: 'P309', label: this.claims.P309?.label, claims: this.claims.P309 || [] },
-     { property: 'P320', label: this.claims.P320?.label, claims: this.claims.P320 || [] },
-     { property: 'P679', label: this.claims.P679?.label, claims: this.claims.P679 || [] },
-     { property: 'P693', label: this.claims.P693?.label, claims: this.claims.P693 || [] },
-     { property: 'P720', label: this.claims.P720?.label, claims: this.claims.P720 || [] }
-      ].filter(g => g.label && g.claims.length > 0);
+  this.iframeGroups = [
+  { property: 'P309', label: this.claims.P309?.label, claims: this.claims.P309 || [] },
+  { property: 'P320', label: this.claims.P320?.label, claims: this.claims.P320 || [] },
+  { property: 'P693', label: this.claims.P693?.label, claims: this.claims.P693 || [] },
+  { property: 'P720', label: this.claims.P720?.label, claims: this.claims.P720 || [] }
+   ].filter(g => g.label && g.claims.length > 0);
 
       // Transcription
       if (this.claims.P251 && this.claims.P251[0].mainsnak.datavalue.value) {
@@ -482,5 +535,49 @@ export class DisplayComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscription1?.unsubscribe();
     this.subscription2?.unsubscribe();
     this.subscription3?.unsubscribe();
+  }
+
+  // Helpers pour popups et icônes
+  private buildAddressPopupHtml(qid: string, label: string, _p646?: string, p646Label?: string): string {
+    const safeLabel = this.escapeHtml(label || '');
+    const href = this.buildInternalItemUrl(qid);
+    // Affiche uniquement le label de la valeur P646 s'il existe (sans préfixe ni valeur brute)
+    const p646Html = p646Label ? `<div style=\"margin-top:4px; font-size: 0.9em; color: #555;\">${this.escapeHtml(p646Label)}</div>` : '';
+    return `<a href="${href}">${safeLabel}</a>${p646Html}`;
+  }
+
+  private buildStreetPopupHtml(qid: string, label: string): string {
+    const safeLabel = this.escapeHtml(label || '');
+    const href = this.buildInternalItemUrl(qid);
+    return `<a href="${href}">${safeLabel}</a>`;
+  }
+
+  private buildInternalItemUrl(qid: string): string {
+    // Conserve le base-href éventuel (ex: /Paris_19/) et le préfixe de serveur
+    const baseEl = document.querySelector('base');
+    let base = (baseEl?.getAttribute('href') || '/').trim();
+    if (!base.startsWith('/')) base = '/' + base;
+    if (!base.endsWith('/')) base += '/';
+    // Normalise base: si '/' rester vide pour éviter '//'
+    const prefix = base === '/' ? '' : base.replace(/\/+$/, '');
+    return `${prefix}/item/${qid}`;
+  }
+
+  private buildAddressIconUrl(): string {
+    const baseEl = document.querySelector('base');
+    let base = (baseEl?.getAttribute('href') || '/').trim();
+    if (!base.startsWith('/')) base = '/' + base;
+    if (!base.endsWith('/')) base += '/';
+    const prefix = base === '/' ? '' : base.replace(/\/+$/, '');
+    // Icône rouge dédiée pour les adresses
+    return `${prefix}/assets/leaflet/marker-icon-red.svg`;
+  }
+
+  private escapeHtml(s: string): string {
+    return s.replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
   }
 }

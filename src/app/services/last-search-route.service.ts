@@ -2,15 +2,15 @@ import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class LastSearchRouteService {
-  private lastSearchRoute: string = '/search'; // valeur par défaut
+  private key = 'lastSearchRoute';
+  private lastRoute: string = '';
 
   setLastSearchRoute(route: string) {
-    console.log('[LastSearchRouteService] setLastSearchRoute:', route);
-    this.lastSearchRoute = route;
+    this.lastRoute = route;
+    localStorage.setItem(this.key, route);
   }
 
   getLastSearchRoute(): string {
-    console.log('[LastSearchRouteService] getLastSearchRoute:', this.lastSearchRoute);
-    return this.lastSearchRoute;
+    return this.lastRoute || localStorage.getItem(this.key) || '';
   }
 }

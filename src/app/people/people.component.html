@@ -1,131 +1,154 @@
-  <div class="cardBackground">
+<div class="cardBackground">
+  <!-- Header / sous-titre -->
   <div class="prosopo-header">
-    <div class="prosopo-title">
-      Paris 19
-    </div>
-    <div class="prosopo-subtitle">
-      {{ subTitle }}
-    </div>
+    <div class="prosopo-title">Paris 19</div>
+    <div class="prosopo-subtitle">{{ subTitle }}</div>
   </div>
-  <mat-card appearance="outlined" class=mat-elevation-z12>
-    <mat-card-content>
-      <div>
-        <div class="search-center2">
-          <mat-form-field>
-            <input matInput placeholder="Ex. Goethe" [formControl]="searchInput"
-                   [matTooltip]="minLengthTooltip" matTooltipPosition="above"
-                   [matTooltipDisabled]="(searchInput.value || '').length >= minTermLength">
-          </mat-form-field>
-          <div *ngIf="warningMessage" class="warning">
-            {{ warningMessage }}
-          </div>
-        </div>
-        <!-- Liens de navigation déplacés ici -->
-        <div class="search-center router-links top-links">
-          <a [routerLink]="['']">{{home_page}}</a> <span>&nbsp;|&nbsp;</span>
-          <a [routerLink]="['/places']">{{places}}</a> <span>&nbsp;|&nbsp;</span>
-          <a [routerLink]="['/search']">FactGrid</a> <span>&nbsp;|&nbsp;</span>
-          <a href="https://database.factgrid.de/query/#%23model%0A%0ASELECT%20%3Fitem%20%3Fviewer%20%3FitemLabel%20%20WHERE%20%7B%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22%5BAUTO_LANGUAGE%5D%2Cen%22.%20%7D%0A%20%20%3Fitem%20wdt%3AP2%20wd%3AQ7%3B%0A%20%20%20%20%20%20%20%20wdt%3AP247%20wd%3AQ24708.%0A%20%20BIND%28STRAFTER%28STR%28%3Fitem%29%2C%20STR%28wd%3A%29%29%20AS%20%3FitemId%29%0A%20%20BIND%28IRI%28CONCAT%28%22https%3A%2F%2Fdatabase.factgrid.de%2Fviewer%2Fitem%2F%22%2C%20%3FitemId%29%29%20AS%20%3Fviewer%29%0A%7D%0A">Sparql query</a>
-        </div>
-        <!-- Mode simple: filtres + toggle AND/OR -->
-        <div class="filter-chips" *ngIf="availableFilters.length && !advancedMode">
-          <button mat-stroked-button type="button"
-                  *ngFor="let f of availableFilters"
-                  (click)="toggleFilter(f)"
-                  [class.inactive-filter]="!isFilterSelected(f)"
-                  [class.active-filter]="isFilterSelected(f)">
-            {{ f.label }}
-          </button>
-          <mat-slide-toggle class="logic-toggle" (change)="toggleCombineMode()" [checked]="combineDisjoint">
-            {{ combineDisjoint ? 'OR' : 'AND' }}
-          </mat-slide-toggle>
-        </div>
-        <div class="advanced-mode-btn" *ngIf="!advancedMode && availableFilters.length">
-          <button mat-stroked-button color="primary" type="button" (click)="toggleAdvancedMode()">Mode avancé</button>
-        </div>
 
-        <!-- Mode avancé: groupes (DNF) -->
-        <div class="advanced-groups" *ngIf="advancedMode">
-          <div class="advanced-mode-btn top">
-            <button mat-stroked-button color="primary" type="button" (click)="toggleAdvancedMode()">Mode simple</button>
-          </div>
-          <div class="groups-row">
-            <div class="group-card" *ngFor="let g of advancedGroups; trackBy: trackGroup">
-              <span class="group-badge" matTooltip="Groupe OR #{{ g.id }} (AND interne)">{{ g.id }}</span>
-              <button class="group-close" mat-icon-button type="button" aria-label="Supprimer" (click)="removeGroup(g.id)" *ngIf="advancedGroups.length > 1">
-                <mat-icon>close</mat-icon>
-              </button>
-              <div class="group-filters" matTooltip="Tous les filtres cochés ici sont combinés en AND">
-                <button mat-stroked-button type="button"
-                        *ngFor="let f of availableFilters"
-                        (click)="toggleFilterInGroup(g, f.key)"
-                        [class.active-filter]="groupHas(g, f.key)"
-                        [class.inactive-filter]="!groupHas(g, f.key)">
-                  {{ f.label }}
-                </button>
-              </div>
-            </div>
-            <div class="group-card add-card" matTooltip="Ajouter un groupe (OR)">
-              <button mat-icon-button type="button" aria-label="Ajouter" (click)="addGroup()">
-                <mat-icon>add</mat-icon>
-              </button>
-            </div>
-          </div>
-          <div class="expression-summary" *ngIf="expressionSummary">{{ expressionSummary }}</div>
+  <!-- ...existing code for filters and advanced-mode markup... -->
+
+  <!-- Zone de recherche principale -->
+  <mat-card appearance="outlined" class="mat-elevation-z12">
+    <mat-card-content>
+      <div class="search-center2">
+        <mat-form-field>
+          <input matInput placeholder="Ex. Goethe" [formControl]="searchInput"
+                 [matTooltip]="minLengthTooltip" matTooltipPosition="above"
+                 [matTooltipDisabled]="(searchInput.value || '').length >= minTermLength">
+        </mat-form-field>
+        @if (warningMessage) {
+          <div class="warning">{{ warningMessage }}</div>
+        }
+      </div>
+
+      <div class="search-center router-links top-links">
+        <a [routerLink]="['']">{{home_page}}</a> <span>&nbsp;|&nbsp;</span>
+        <a [routerLink]="['/places']">{{places}}</a> <span>&nbsp;|&nbsp;</span>
+        <a [routerLink]="['/search']">FactGrid</a> <span>&nbsp;|&nbsp;</span>
+        <a href="https://database.factgrid.de/query/">Sparql query</a>
+      </div>
+
+      <!-- Mode simple: filtres + toggle AND/OR -->
+      <div class="filter-chips" *ngIf="availableFilters.length && !advancedMode">
+        <button mat-stroked-button type="button"
+                *ngFor="let f of availableFilters"
+                (click)="toggleFilter(f)"
+                [class.inactive-filter]="!isFilterSelected(f)"
+                [class.active-filter]="isFilterSelected(f)">
+          {{ f.label }}
+        </button>
+        <mat-slide-toggle class="logic-toggle" (change)="toggleCombineMode()" [checked]="combineDisjoint">
+          {{ combineDisjoint ? 'OR' : 'AND' }}
+        </mat-slide-toggle>
+      </div>
+      <div class="advanced-mode-btn" *ngIf="!advancedMode && availableFilters.length">
+        <button mat-stroked-button color="primary" type="button" (click)="toggleAdvancedMode()">Mode avancé</button>
+      </div>
+      
+      <!-- Mode avancé: groupes (DNF) -->
+      <div class="advanced-groups" *ngIf="advancedMode">
+        <div class="advanced-mode-btn top">
+          <button mat-stroked-button color="primary" type="button" (click)="toggleAdvancedMode()">Mode simple</button>
         </div>
+        <div class="groups-row">
+          <div class="group-card" *ngFor="let g of advancedGroups; trackBy: trackGroup">
+            <span class="group-badge" matTooltip="Groupe OR #{{ g.id }} (AND interne)">{{ g.id }}</span>
+            <button class="group-close" mat-icon-button type="button" aria-label="Supprimer" (click)="removeGroup(g.id)" *ngIf="advancedGroups.length > 1">
+              <mat-icon>close</mat-icon>
+            </button>
+            <div class="group-filters" matTooltip="Tous les filtres cochés ici sont combinés en AND">
+              <button mat-stroked-button type="button"
+                      *ngFor="let f of availableFilters"
+                      (click)="toggleFilterInGroup(g, f.key)"
+                      [class.active-filter]="groupHas(g, f.key)"
+                      [class.inactive-filter]="!groupHas(g, f.key)">
+                {{ f.label }}
+              </button>
+            </div>
+          </div>
+          <div class="group-card add-card" matTooltip="Ajouter un groupe (OR)">
+            <button mat-icon-button type="button" aria-label="Ajouter" (click)="addGroup()">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+        </div>
+        <div class="expression-summary" *ngIf="expressionSummary">{{ expressionSummary }}</div>
       </div>
     </mat-card-content>
+  </mat-card>
 
-    <div class="search-center">
-      @if (isDisplay == true) {
-      <div class="searchListSize">
-        <!--  class="searchListSize" seems to be useless -->
-        <div class="details">
-          @for (item of items; track item.id) {
-          <div>
-            <span class="search-label">{{item.label}}&nbsp;</span>
-            <mat-icon-button class="internalLink" type="button" (click)="goToDisplay(item.id)">
-              <mat-icon color="primary" [inline]="true">open_in_new</mat-icon>
-            </mat-icon-button>
-            @if (item.description) {
-            <span>, {{item.description }}</span>
-            }
-            <hr>
-          </div>
-          }
-        </div>
-      </div>
-      }
-
-      @if (isDisplay == false) {
-      <div>
-        <div class="search-itemSelected">
-          <mat-card appearance="outlined" class="search-itemSelected-mat-card">
-            <div class="selectedListTitle2">{{formerVisitsTitle}}</div>
+  <!-- Selected items (aligné sur places, Angular control flow) -->
+  @if (!isDisplay) {
+    <div>
+      <div class="search-itemSelected">
+        <mat-card appearance="outlined" class="search-itemSelected-mat-card">
+          <div class="selectedListTitle2">{{ formerVisitsTitle }}</div>
+          <mat-card-content>
             <div class="selectedItemSize">
               <hr>
-              <mat-card-content>
-                <div>
-                  @for (selectedItem of selectedItemsList; track selectedItem) {
+              <div>
+                @for (selectedItem of selectedItemsList; track selectedItem) {
                   <div class="labelTitlePadding">
                     @if (selectedItem) {
-                    <span class="selectedItemText">
-                      {{selectedItem.label}}&nbsp;
-                      <mat-icon-button class="internalLink" type="button" (click)="goToDisplay(selectedItem.value.id)">
-                        <mat-icon class="whiteButton" [inline]="true">open_in_new</mat-icon>
-                      </mat-icon-button>
-                    </span>
+                      <span class="selectedItemText">
+                        {{ selectedItem.label }}&nbsp;
+                        <mat-icon-button class="internalLink" type="button" (click)="goToDisplay(selectedItem.value.id)">
+                          <mat-icon class="whiteButton" [inline]="true">open_in_new</mat-icon>
+                        </mat-icon-button>
+                      </span>
                     }
                     <br>
                   </div>
-                  }
-                </div>
-              </mat-card-content>
+                }
+              </div>
             </div>
-          </mat-card>
-        </div>
+          </mat-card-content>
+        </mat-card>
       </div>
-      }
     </div>
-  </mat-card>
+  }
 
+  <!-- Liste filtrée (une seule version, Angular control flow) -->
+  @if (isDisplay) {
+    <div class="search-center">
+      <div class="searchListSize">
+        <mat-card appearance="outlined" class="mat-elevation-z2" style="max-width: 760px; width: 100%; margin: 0 auto;">
+          <mat-card-content>
+            @let filtered = (filteredItems$ | async);
+            @if (filtered?.length > 0) {
+              <div class="items-list-container" style="display:flex;justify-content:center;">
+                <div class="items-list-inner" style="max-width:700px;width:100%;">
+                  <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+                    <mat-form-field appearance="outline" class="filter-field">
+                      <mat-label>Filtrer les résultats</mat-label>
+                      <input matInput [formControl]="filterInput" />
+                    </mat-form-field>
+                    <span class="item-count">{{ filtered.length }} résultats</span>
+                  </div>
+                  <ul style="padding:0;margin:0;">
+                    @for (item of filtered; track item.id) {
+                      <li class="item-row"
+                          [class.clicked]="clickedItemId === item.id"
+                          (click)="onItemRowClick(item.id); $event.preventDefault();"
+                          tabindex="-1"
+                          style="cursor:pointer; list-style:none; padding:10px 0; border-bottom:1px solid #eee; outline:none;">
+                        <div class="item-main">
+                          <span class="item-label">{{ item.label }}</span>
+                          @if (item.description) {
+                            <span class="item-description">{{ item.description }}</span>
+                          }
+                        </div>
+                      </li>
+                    }
+                  </ul>
+                </div>
+              </div>
+            } @else {
+              <div class="no-results" style="padding:12px;color:#666;">Aucun résultat</div>
+            }
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  }
+</div>

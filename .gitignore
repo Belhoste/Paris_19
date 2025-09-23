@@ -4,3 +4,6 @@
 FileContentIndex/
 # Ignorer le dossier de configuration de Visual Studio
 .vs/
+# Ne pas ignorer les images assets nécessaires à l'app
+# src/assets/
+# *.jpg

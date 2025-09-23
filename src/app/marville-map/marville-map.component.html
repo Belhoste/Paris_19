@@ -1,0 +1,13 @@
+<div style="padding: 0 16px;">
+  <h2>{{ Marville_Paris }}</h2>
+  <mat-card>
+    <div *ngIf="error" style="color:#b71c1c;padding:8px;font-size:0.9rem">{{ error }}</div>
+    <div class="map-placeholder">
+      <div id="leaflet-map" style="height: 80vh; width: 100%; max-width:100%; margin:0 auto;"></div>
+      <mat-card-content>
+        <div *ngIf="!error">{{ Marville_Paris }}</div>
+      </mat-card-content>
+    </div>
+  </mat-card>
+</div>
+

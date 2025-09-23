@@ -22,7 +22,15 @@ setIframesDisplay(item, iframes){
   }
 
   if (item[0].claims.P320 !==undefined){  //FactGrid list of members     
-    item[1].splice(item[1].indexOf("P320"),1);
+    // Sécurise le splice
+    if (Array.isArray(item[1])) {
+      const idx = item[1].indexOf("P320");
+      if (idx > -1) item[1].splice(idx,1);
+    }
+    // Initialise l'array .iframe si absent
+    if (!item[0].claims.P320.iframe) {
+      item[0].claims.P320.iframe = [];
+    }
     for (let i=0; i<item[0].claims.P320.length; i++){
       item[0].claims.P320[i].mainsnak.datatype=item[0].claims.P320[i].mainsnak.datavalue.value;
       item[0].claims.P320.iframe[i]= item[0].claims.P320[i].mainsnak.datavalue.value ;}
@@ -32,7 +40,10 @@ setIframesDisplay(item, iframes){
     
   if (item[0].claims.P679 !== undefined) { //house numbers
     console.log(item[0].claims.P679);
-    item[1].splice(item[1].indexOf("P679"), 1);
+    if (Array.isArray(item[1])) {
+      const idx = item[1].indexOf("P679");
+      if (idx > -1) item[1].splice(idx, 1);
+    }
     if (!item[0].claims.P679.iframe) {
       item[0].claims.P679.iframe = [];
     }
@@ -45,7 +56,14 @@ setIframesDisplay(item, iframes){
     }
     
   if (item[0].claims.P693 !==undefined){ //FactGrid map visualisation
-    item[1].splice(item[1].indexOf("P693"),1); 
+    if (Array.isArray(item[1])) {
+      const idx = item[1].indexOf("P693");
+      if (idx > -1) item[1].splice(idx,1);
+    }
+    // Initialise l'array .iframe si absent
+    if (!item[0].claims.P693.iframe) {
+      item[0].claims.P693.iframe = [];
+    }
     for (let i=0; i<item[0].claims.P693.length; i++){   
       item[0].claims.P693[i].mainsnak.datatype=item[0].claims.P693[i].mainsnak.datavalue.value;
       item[0].claims.P693.iframe[i]= item[0].claims.P693[i].mainsnak.datavalue.value ;}

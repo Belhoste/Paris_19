@@ -79,7 +79,7 @@ export class SearchComponent implements OnInit {
     formerVisitsTitle:string = "you have visited:";
     selectedItemsList: any[] = JSON.parse(localStorage.getItem('selectedItems'));
 
-
+    clickedItemId: string | null = null;
   
   goToDisplay(itemId: string) {
     this.lastSearchRoute.setLastSearchRoute(this.router.url);
@@ -107,45 +107,7 @@ export class SearchComponent implements OnInit {
     this.selectedItemsList = this.selectedItemsList.filter(function (el) { return (el !== null) });
 
     this.pages = this.request.getStat().pipe(map(res => Object.values(res)[1].statistics.pages));
-    //  this.pages.subscribe(res => console.log(res));
-
-    //   this.pages = this.stat();
-
-    //   console.log(this.pages);
-    /*
-     this.subtitle = "a database for historians"
-      if (this.selectedLang === "de") { this.subtitle = "eine Databank für Historiker*innen" }
-      if (this.selectedLang === "fr") { this.subtitle = "une base de données pour historien.nes"}
-      if (this.selectedLang === "es") { this.subtitle = "una base de datos para historiadores"}
-      if (this.selectedLang === "it") { this.subtitle = "un database per gli storici"}
   
-      this.advanced_search = "advanced search"
-      if (this.selectedLang === "de") { this.advanced_search = "erweiterte Suche" }
-      if (this.selectedLang === "fr") { this.advanced_search = "recherche avancée"}
-      if (this.selectedLang === "es") { this.advanced_search = "búsqueda avanzada"}
-      if (this.selectedLang === "it") { this.advanced_search = "ricerca avanzata"}
-  
-      this.projects = "research projects"
-      if (this.selectedLang === "de") { this.projects = "Forschungsprojekten" }
-      if (this.selectedLang === "fr") { this.projects = "projets de recherche"}
-      if (this.selectedLang === "es") { this.projects = "proyectos de investigación"}
-      if (this.selectedLang === "it") { this.projects = "progetti di ricerca"}
-  
-      this.fields = "fields of research"
-      if (this.selectedLang === "de") { this.fields = "Forschungsfelder" }
-      if (this.selectedLang === "fr") { this.fields = "domaines de recherche"}
-      if (this.selectedLang === "es") { this.projects = "campos de investigación"}
-      if (this.selectedLang === "it") { this.projects = "aree di ricerca"}
-        
-      this.formerVisitsTitle = "you have visited:"
-      if(this.selectedLang === "de") {this.formerVisitsTitle = "Sie haben besucht:"};
-      if(this.selectedLang === "fr") {this.formerVisitsTitle = "vous avez visité :"};
-      if(this.selectedLang === "es") {this.formerVisitsTitle = "has visitado :"}
-      if(this.selectedLang === "it") {this.formerVisitsTitle = "hai visitato :"}
-  
-      */
-
-    console.log(this.selectedItemsList);
 
 
     this.labels = this.searchInput.valueChanges   //search engine
@@ -194,5 +156,12 @@ export class SearchComponent implements OnInit {
     ngOnDestroy(): void {
        this.labels.unsubscribe()
        }
-   
+
+       onItemRowClick(itemId: string) {
+        this.clickedItemId = itemId;
+        setTimeout(() => {
+          this.clickedItemId = null;
+          this.router.navigate(['/item', itemId]);
+        }, 200);
+      }
    }

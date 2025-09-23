@@ -13,6 +13,10 @@
   // Garder les hovers possibles (optionnel)
   "gitlens.hovers.currentLine.over": "line"
   ,
+  // Désactiver totalement les hovers GitLens
+  "gitlens.hovers.enabled": false,
+  // Désactiver l'élément de barre d'état GitLens
+  "gitlens.statusBar.enabled": false,
   // Masquer les pastilles / couleurs de l'explorateur
   "explorer.decorations.colors": false,
   "explorer.decorations.badges": false,
@@ -31,6 +35,20 @@
   "editor.occurrencesHighlight": "off",
   "editor.inlayHints.enabled": "off",
   "editor.renderLineHighlight": "none",
+  // Désactiver les guides d'indentation
+  "editor.guides.indentation": false,
+  "editor.guides.highlightActiveIndentation": false,
+  // Désactiver CodeLens global (références au-dessus des fonctions)
+  "editor.codeLens": false,
+  // Désactiver CodeLens TS/JS (références/implémentations)
+  "typescript.referencesCodeLens.enabled": false,
+  "javascript.referencesCodeLens.enabled": false,
+  "typescript.implementationsCodeLens.enabled": false,
+  "javascript.implementationsCodeLens.enabled": false,
+  // Optionnel: désactiver complètement les hovers éditeur (si encore gênants)
+  // "editor.hover.enabled": false,
+  // Désactiver inline suggest/ghost text (Copilot & co)
+  "editor.inlineSuggest.enabled": false,
   // Neutraliser les fonds verts/rouges même en cas d'ouverture accidentelle d'un diff
   "workbench.colorCustomizations": {
     "diffEditor.insertedLineBackground": "#00000000",

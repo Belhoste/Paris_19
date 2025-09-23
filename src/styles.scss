@@ -65,13 +65,13 @@ $my-theme: mat.m2-define-light-theme(( color:(
   $warn: map.get($my-theme, warn);
 
   &.mat-primary {
-    #{$property}: theming.get-color-from-palette($primary, $hue);
+    #{$property}: mat.get-color-from-palette($primary, $hue);
   }
   &.mat-accent {
-    #{$property}: theming.get-color-from-palette($accent, $hue);
+    #{$property}: mat.get-color-from-palette($accent, $hue);
   }
   &.mat-warn {
-    #{$property}: theming.get-color-from-palette($warn, $hue);
+    #{$property}: mat.get-color-from-palette($warn, $hue);
   }
 
   &.mat-primary,
@@ -80,7 +80,7 @@ $my-theme: mat.m2-define-light-theme(( color:(
   &.mat-button-disabled {
     &.mat-button-disabled {
       $palette: if($property == "color", $foreground, $background);
-      #{$property}: theming.get-color-from-palette($palette, disabled-button);
+      #{$property}: mat.get-color-from-palette($palette, disabled-button);
     }
   }
 }
@@ -158,6 +158,8 @@ html, body {
 .mat-mdc-card, .mat-mdc-dialog-container {
   font-family: 'Oxygen', Arial, sans-serif !important;
 }
+
+
 
 .app-container {
   min-height: 100vh;

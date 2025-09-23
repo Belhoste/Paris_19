@@ -1,14 +1,6 @@
 <div class="prosopo-header">
   <div class="prosopo-title">
-    {{
- lastSearchRoute === '/search'
-    ? 'FactGrid'
-    : (lastSearchRoute === '/animal_magnetism'
-        ? 'Harmonia Universalis'
-        : (lastSearchRoute === '/bibliography'
-            ? bibliography
-            : lastSearchRoute))
-    }}
+    {{ lastSearchRoute === '/search' ? 'FactGrid' : (lastSearchRoute === '/people' ? people : (lastSearchRoute === '/places' ? places : (lastSearchRoute === '/marville-map' ? Marville_Paris : lastSearchRoute))) }}
   </div>
   <div class="prosopo-subtitle">
   </div>
@@ -16,20 +8,28 @@
   <div class="search-center router-links">
     <a [routerLink]="['']">{{home_page}}</a>
     <span>&nbsp;|&nbsp;</span>
-    <a [routerLink]="['/bibliography']">{{bibliography}}</a>
-    <span>&nbsp;|&nbsp;</span>
-    <a [routerLink]="['/search']">FactGrid</a>
+    <!-- Cas origine Search: afficher les deux liens People & Places, pas le lien FactGrid (retour via new search) -->
+    <ng-container *ngIf="lastSearchRoute === '/search'; else notFromSearch">
+      <a [routerLink]="['/people']">{{people}}</a>
+      <span>&nbsp;|&nbsp;</span>
+      <a [routerLink]="['/places']">{{places}}</a>
+    </ng-container>
+    <ng-template #notFromSearch>
+      <!-- Origine People: proposer Places; origine Places: proposer People; afficher FactGrid -->
+      <a *ngIf="lastSearchRoute === '/people'" [routerLink]="['/places']">{{places}}</a>
+      <a *ngIf="lastSearchRoute === '/places'" [routerLink]="['/people']">{{people}}</a>
+      <a *ngIf="lastSearchRoute === '/marville-map'" [routerLink]="['/marville-map']">{{Marville_Paris}}</a>
+      <a *ngIf="lastSearchRoute !== '/people' && lastSearchRoute !== '/places' && lastSearchRoute !== '/marville-map'" [routerLink]="['/people']">{{people}}</a>
+      <span>&nbsp;|&nbsp;</span>
+      <a [routerLink]="['/search']">FactGrid</a>
+    </ng-template>
   </div>
 </div>
 
 
 <div class="center">
 
-  <button mat-button color="primary" class="mat-typography"
-          [routerLink]="[lastSearchRoute]">
-  {{newSearch}}
-
-  </button>
+  <button mat-button color="primary" class="mat-typography" [routerLink]="lastSearchRoute">{{ newSearch }}</button>
 
 </div>
 
@@ -127,10 +127,22 @@
 
           <!--********************** section Main  *********************** -->
 
-
           <div class="matCardPadding" [ngClass]="isMain ? 'show-division':'hide-division'">
             <mat-card appearance="outlined" class=mat-elevation-z12>
               <app-main-display [mainList]="this.mainList" [mainTitle]="this.mainTitle" [list]="this.list"></app-main-display>
+            </mat-card>
+          </div>
+
+          <!-- Carte des adresses (si voie et adresses disponibles) sous le main display -->
+          <div class="matCardPadding" *ngIf="showStreetMap">
+            <mat-card appearance="outlined" class="mat-elevation-z12">
+              <div class="cardBackground">
+                <mat-card-content>
+                  <div class="subdivisionTitle">{{ addressesTitle }}</div>
+                  <hr>
+                  <app-leaflet-embed [markers]="streetMarkers" [zoom]="16" height="380px"></app-leaflet-embed>
+                </mat-card-content>
+              </div>
             </mat-card>
           </div>
 
@@ -322,4 +334,4 @@
   </mat-drawer-container>
 </div>
     }
- 
+

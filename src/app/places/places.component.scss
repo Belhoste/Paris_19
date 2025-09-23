@@ -34,9 +34,7 @@
 
  
 
-.selectedItemSize {
-   font-size: 14px;
-}
+
 
 .search-top-margin {
   margin-top: 20px;
@@ -60,19 +58,60 @@
 .filter-chips button.active-filter { background:#1976d2; color:#fff; border-color:#1976d2; }
 .filter-chips button.inactive-filter { opacity:0.65; }
 
+/* Nouveau layout filtres sous sous-titre */
+.filters-wrapper { display:flex; flex-direction:column; align-items:center; margin-top:2px; }
+.filter-line { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; max-width:100%; position:relative; }
+.filter-line.primary { margin-bottom:4px; }
+.filter-line.secondary { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+.filter-line.secondary.hidden { display:none; }
+.filter-line.collapsed { overflow:hidden; }
+.filter-line.collapsed button.overflowed { display:none; }
+.filter-line button.active-filter { background:#1976d2; color:#fff; border-color:#1976d2; }
+.filter-line button.inactive-filter { opacity:0.65; }
+.filter-line .logic-toggle { align-self:center; height:36px; display:flex; align-items:center; }
+.more-filters { margin-top:4px; text-align:center; }
+.more-filters button mat-icon { vertical-align:middle; }
+
+/* Position sous-titre */
+.filters-under-subtitle { margin-top:0; padding-top:0; position:relative; }
+.filters-wrapper { width:100%; display:flex; flex-direction:column; align-items:center; }
+.filters-under-subtitle::before { content:""; position:absolute; top:-3px; left:50%; transform:translateX(-50%); width:50%; height:1px; background:linear-gradient(to right, transparent, #bbb, transparent); }
+.advanced-groups-under { margin-top:8px; margin-bottom:18px; }
+
 /* Mode avancé */
-.advanced-mode-btn { display:flex; justify-content:center; margin-bottom:12px; }
+.advanced-mode-btn { display:flex; justify-content:center; margin-top:10px; margin-bottom:12px; }
 .advanced-mode-btn.top { margin-bottom:16px; }
 .advanced-groups { margin-top:10px; }
-.groups-row { display:flex; flex-wrap:wrap; gap:18px; align-items:stretch; justify-content:center; }
+.groups-row { display:flex; flex-wrap:wrap; gap:18px; align-items:flex-start; justify-content:center; }
 .group-card { display:flex; flex-direction:row; padding:10px 14px; border:1px solid #d0d7de; border-radius:10px; background:#ffffff; box-shadow:0 1px 2px rgba(0,0,0,0.05); min-width:480px; max-width:640px; position:relative; align-items:center; }
-.group-card.add-card { justify-content:center; align-items:center; min-width:70px; background:#eef5fb; }
+.group-card.add-card { display:none; }
+.add-pill { border:1px dashed #1976d2; background:#fff; color:#1976d2; width:30px; height:30px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; font-size:18px; line-height:1; margin-top:2px; }
+.add-pill:hover { background:#1976d2; color:#fff; }
 .group-badge { display:inline-flex; justify-content:center; align-items:center; width:26px; height:26px; background:#1976d2; color:#fff; border-radius:50%; font-size:12px; font-weight:600; margin-right:12px; flex-shrink:0; }
 .group-close { position:absolute; top:4px; right:4px; }
 .group-filters { display:flex; flex-wrap:wrap; gap:8px; flex:1; }
 .group-filters button.active-filter { background:#1976d2; color:#fff; border-color:#1976d2; }
 .group-filters button.inactive-filter { opacity:0.6; }
 .expression-summary { margin-top:12px; font-size:13px; text-align:center; font-style:italic; color:#37474f; }
+
+/* Responsive advanced mode: éviter débordements sur portables étroits */
+@media (max-width: 780px) {
+  .groups-row { width:100%; gap:14px; }
+  .group-card { min-width:0; width:100%; max-width:100%; padding:10px 10px; box-sizing:border-box; }
+  .group-filters { gap:6px; }
+  .group-filters button { flex:1 1 auto; max-width:100%; }
+}
+
+/* Espacements ré-augmentés (souffle plus large demandé) */
+/* Stratégie: utiliser essentiellement la marge basse du titre pour l’écart titre→sous-titre
+  et la marge basse du header pour l’écart sous-titre→filtres. */
+ .prosopo-header { margin-top:18px; margin-bottom:18px; }
+ .prosopo-title { margin-bottom:14px; }
+ .prosopo-subtitle { margin-top:0; margin-bottom:0; }
+
+/* Agrandissement spécifique du titre (plus grand) + réduction espace avec sous-titre */
+.prosopo-title { font-size:4rem; line-height:1.05; }
+@media (max-width: 767px) { .prosopo-title { font-size:3.2rem; margin-bottom:12px; } }
 
 
 

@@ -31,6 +31,16 @@
        </mat-card-content>
      </mat-card>
 
+  <mat-card class="home-card mat-elevation-z4 clickable" routerLink="/pictures" tabindex="0" role="link" aria-label="Pictures – Browse images">
+       <mat-card-title>{{pictures}}</mat-card-title>
+       <mat-card-content>
+         <div class="card-image-row">
+           <img src="assets/daguerréotypomanie.jpg" alt="Ciel de Paris" class="card-image card-image-left" />
+           <div class="card-image-text">{{searchOnImages}}.</div>
+         </div>
+       </mat-card-content>
+     </mat-card>
+
   <mat-card class="home-card mat-elevation-z4 clickable" routerLink="/search" tabindex="0" role="link" [attr.aria-label]="'FactGrid – ' + searchOnFactGrid">
        <mat-card-title>FactGrid</mat-card-title>
        <mat-card-content>

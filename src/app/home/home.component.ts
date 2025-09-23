@@ -24,6 +24,8 @@ export class HomeComponent implements OnInit {
   searchOnPlaces: string;
   searchOnPeople: string;
   searchOnFactGrid: string;
+  searchOnImages: string;
+  pictures: string;
 
   ngOnInit(): void {
     // Initialisation des traductions
@@ -34,6 +36,8 @@ export class HomeComponent implements OnInit {
     this.people = this.lang.getTranslation('people', this.lang.selectedLang);
     this.searchOnFactGrid = this.lang.getTranslation('searchOnFactGrid', this.lang.selectedLang);
     this.search = this.lang.getTranslation('search', this.lang.selectedLang);
+    this.pictures = this.lang.getTranslation('pictures', this.lang.selectedLang);
+    this.searchOnImages = this.lang.getTranslation('searchOnImages', this.lang.selectedLang);
 
     console.log('home_subtitle:', this.home_subtitle);
 

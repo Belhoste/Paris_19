@@ -1,5 +1,4 @@
-
-  <div class="prosopo-header">
+<div class="prosopo-header">
     <div class="prosopo-title">
       FactGrid
     </div>
@@ -23,21 +22,22 @@
       <div class="search-center">
         @if (isDisplay == true) {
         <div class="searchListSize">
-          <!--  class="searchListSize" seems to be useless -->
-          <div class="details">
+          <ul>
             @for (item of items; track item.id) {
-            <div>
-              <span class="search-label">{{item.label}}&nbsp;</span>
-              <mat-icon-button class="internalLink" type="button" (click)="goToDisplay(item.id)">
-                <mat-icon color="primary" [inline]="true">open_in_new</mat-icon>
-              </mat-icon-button>
-              @if (item.description) {
-              <span>, {{item.description }}</span>
-              }
-              <hr>
-            </div>
+            <li class="item-row"
+                [class.clicked]="clickedItemId === item.id"
+                (click)="onItemRowClick(item.id)"
+                tabindex="0"
+                style="cursor:pointer;">
+              <div class="item-main">
+                <span class="item-label">{{ item.label }}</span>
+                @if (item.description) {
+                <span class="item-description">{{ item.description }}</span>
+                }
+              </div>
+            </li>
             }
-          </div>
+          </ul>
         </div>
         }
 

@@ -1,6 +1,6 @@
-import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ChangeDetectorRef, inject, ViewChildren, QueryList, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Subscription, Observable, forkJoin, of, BehaviorSubject, combineLatest } from 'rxjs';
+import { Subscription, Observable, of, BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { map, tap, switchMap, debounceTime, filter, startWith, distinctUntilChanged } from 'rxjs/operators';
 import { FormControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -15,22 +15,13 @@ import { RouterModule, Router } from '@angular/router';
 import { SetLanguageService } from '../services/set-language.service';
 import { RequestService } from '../services/request.service';
 import { SelectedLangService } from '../selected-lang.service';
+import { OCCUPATION_FILTER_TRANSLATIONS } from '../config/translations.config';
 import { LastSearchRouteService } from '../services/last-search-route.service'; 
+import { SearchService, WikibaseEntity } from '../services/search.service';
+import { PEOPLE_SEARCH_CONFIG, OccupationFilterConfig } from '../config/search-filters.config';
 //import { SearchCacheService } from '../services/search-cache.service';
 
-export interface WikibaseEntity {
-  id: string;
-  labels?: {
-    [lang: string]: { value: string }
-  };
-  aliases?: {
-    [lang: string]: { value: string }[]
-  };
-  descriptions?: {
-    [lang: string]: { value: string }
-  };
-  // Ajoutez d'autres propriétés si besoin (claims, sitelinks, etc.)
-}
+// WikibaseEntity importé depuis SearchService
 
 // Fonction utilitaire pour découper un tableau en lots de taille fixe
 function chunkArray<T>(array: T[], chunkSize: number): T[][] {
@@ -60,51 +51,55 @@ function chunkArray<T>(array: T[], chunkSize: number): T[][] {
     templateUrl: './people.component.html',
     styleUrls: ['./people.component.scss']
 })
-export class PeopleComponent implements OnInit {
+export class PeopleComponent implements OnInit, AfterViewInit {
+  private readonly debug = false;
   private changeDetector = inject(ChangeDetectorRef);
   private request = inject(RequestService);
   private setLanguage = inject(SetLanguageService);
   private lang = inject(SelectedLangService);
   private lastSearchRoute = inject(LastSearchRouteService);
   private router = inject(Router);
+  private search = inject(SearchService);
 //  private searchCache = inject(SearchCacheService);
 
   prosopography: string = "Prosopography Harmonia Universalis";
   animalMagnetism_subtitle: string = "a database on animal magnetism";
   home_page: string;
   bibliography: string;
+  formerVisitsTitle: string = 'you have visited:';
 
   places: string = "Places";
 
   subTitle: string = "People";
   advanced_search: string = "advanced search";
   projects: string = "research projects";
-  fields: string = "fields of reserach";
+  fields: string = "fields of research";
 
   warningMessage: string = "";
   minTermLength = 2;
   minLengthTooltip = 'Tapez au moins 2 caractères pour lancer la recherche';
+  tooltipAny: string; // OR
+  tooltipAll: string; // AND
 
   searchInput = new FormControl();
+  filterInput = new FormControl('');
   public isDisplay: boolean = false;
   labels: Subscription;
+
   items: WikibaseEntity[] = [];
+  private items$ = new BehaviorSubject<WikibaseEntity[]>([]);
+  filteredItems$: Observable<any[]>; // any pour lever la contrainte TS sur label/description
+
   selectedItemsList: any[] = JSON.parse(localStorage.getItem('selectedItems')) || [];
   pages: Observable<number>;
+  clickedItemId: string | null = null;
 
-  // Filtres dynamiques (désormais filtrage LOCAL sur les claims plutôt que dans srsearch)
-  // occupationId correspond à la valeur (Q-id) attendue dans les claims P165 (à vérifier selon votre modèle: si l'occupation réelle est P106, adapter ci-dessous)
-  availableFilters: { key: string; label: string; occupationId: string; }[] = [
-    { key: 'painter', label: 'Peintres', occupationId: 'Q36783' },
-    { key: 'writer', label: 'Écrivains', occupationId: 'Q23190' },
-  { key: 'actor', label: 'Comédiens', occupationId: 'Q176304' },
-  { key: 'doctor', label: 'Médecins', occupationId: 'Q38980' },
-  { key: 'bookseller', label: 'Libraires', occupationId: 'Q36507' },
-  { key: 'printer', label: 'Imprimeurs', occupationId: 'Q38848' },
-  { key: 'engraver', label: 'Graveurs', occupationId: 'Q162783' },
-  ];
+  // Filtres dynamiques 
+  availableFilters: OccupationFilterConfig[] = PEOPLE_SEARCH_CONFIG.availableFilters
+  .filter((f): f is OccupationFilterConfig => 'occupationId' in f)
+  .map(f => ({ ...f, label: '' }));
   private selectedFilters = new Set<string>();
-  // Observable des clés de filtres sélectionnés (et non plus des clauses srsearch)
+  // Observable des clés de filtres sélectionnés 
   private selectedFilters$ = new BehaviorSubject<string[]>([]);
   // Mode de combinaison des filtres: true = OR (disjoint), false = AND (conjoint)
   combineDisjoint = false;
@@ -122,10 +117,17 @@ export class PeopleComponent implements OnInit {
   private advancedGroups$ = new BehaviorSubject<{ id: number; allOf: string[] }[]>([]);
   private groupIdCounter = 0;
   expressionSummary = '';
+  // Gestion repli des filtres
+  @ViewChildren('filterBtn') filterButtons!: QueryList<ElementRef<HTMLButtonElement>>;
+  collapsedFilters = true;
+  overflowFilterKeys = new Set<string>();
+  private minCollapsibleFilters = 6;
+  // Debounce resize for overflow computation
+  private resize$ = new Subject<void>();
+  private resizeSub?: Subscription;
+  @HostListener('window:resize') onResize() { this.resize$.next(); }
 
   private emitAdvancedGroups() {
-  // Ne pas filtrer ici: on veut que l'utilisateur voie immédiatement un nouveau groupe vide après +
-  // Le nettoyage éventuel pourra se faire en quittant le mode avancé si nécessaire.
     this.advancedGroups$.next(this.advancedGroups.map(g => ({ id: g.id, allOf: [...g.allOf] })));
     this.recomputeExpressionSummary();
   }
@@ -196,60 +198,15 @@ export class PeopleComponent implements OnInit {
 
   trackGroup(index: number, g: { id: number; allOf: string[] }) { return g.id; }
 
-  private initOccupationClosureCacheSkeleton() {
-    // Initialiser chaque filtre avec son root seulement pour un fallback immédiat
-    this.availableFilters.forEach(f => {
-      if (!this.occupationClosureCache[f.key]) {
-        this.occupationClosureCache[f.key] = new Set([f.occupationId]);
-      }
-    });
-  }
-
   private loadOccupationClosures() {
     if (this.occupationClosureLoaded || this.occupationClosureLoading) return;
     this.occupationClosureLoading = true;
-    this.initOccupationClosureCacheSkeleton();
-    const roots = this.availableFilters.map(f => `wd:${f.occupationId}`).join(' ');
-    // P3 = sous-classe de (transitif * )
-    const sparql = `SELECT ?root ?occ WHERE { VALUES ?root { ${roots} } ?occ wdt:P3* ?root . }`;
-    const url = `https://database.factgrid.de/sparql?format=json&query=${encodeURIComponent(sparql)}`;
-    this.request.getItem(url).subscribe({
-      next: (res: any) => {
-        try {
-          const bindings = res?.results?.bindings || [];
-          bindings.forEach((b: any) => {
-            const rootUri = b.root?.value || '';
-            const occUri = b.occ?.value || '';
-            const rootMatch = rootUri.match(/Q\d+/);
-            const occMatch = occUri.match(/Q\d+/);
-            if (!rootMatch || !occMatch) return;
-            const rootQ = rootMatch[0];
-            const occQ = occMatch[0];
-            // Trouver le filtre correspondant à ce rootQ
-            const filter = this.availableFilters.find(f => f.occupationId === rootQ);
-            if (!filter) return;
-            const set = this.occupationClosureCache[filter.key] || new Set<string>();
-            set.add(rootQ);
-            set.add(occQ);
-            this.occupationClosureCache[filter.key] = set;
-          });
-          this.occupationClosureLoaded = true;
-          console.log('[PeopleComponent] Occupation closures chargées:', Object.fromEntries(Object.entries(this.occupationClosureCache).map(([k,v]) => [k, Array.from(v)])));
-          // Relancer filtrage si des filtres sont déjà actifs
-          const activeKeys = Array.from(this.selectedFilters);
-            if (activeKeys.length) {
-              this.selectedFilters$.next(activeKeys);
-            }
-        } catch (e) {
-          console.error('[PeopleComponent] Erreur parsing SPARQL occupation closures', e);
-        }
-      },
-      error: (err: any) => {
-        console.warn('[PeopleComponent] Échec SPARQL occupation closures, fallback racines uniquement', err);
-      },
-      complete: () => {
-        this.occupationClosureLoading = false;
-      }
+    this.search.loadClosures(PEOPLE_SEARCH_CONFIG, this.availableFilters).subscribe((closures) => {
+      this.occupationClosureCache = closures;
+      this.occupationClosureLoaded = true;
+      this.occupationClosureLoading = false;
+      const activeKeys = Array.from(this.selectedFilters);
+      if (activeKeys.length) this.selectedFilters$.next(activeKeys);
     });
   }
 
@@ -258,7 +215,7 @@ export class PeopleComponent implements OnInit {
     this.combineDisjoint$.next(this.combineDisjoint);
   }
 
-  toggleFilter(filter: { key: string }) {
+  toggleFilter(filter: OccupationFilterConfig) {
   if (this.advancedMode) return; // Ignorer en mode avancé
     // S'assurer que la fermeture a été demandée (lazy: on lance si pas encore)
     if (!this.occupationClosureLoaded && !this.occupationClosureLoading) {
@@ -270,11 +227,12 @@ export class PeopleComponent implements OnInit {
       this.selectedFilters.add(filter.key);
     }
     const activeKeys = Array.from(this.selectedFilters);
-    console.log('[PeopleComponent] toggleFilter selection(keys)=', activeKeys);
+  if (this.debug) console.log('[PeopleComponent] toggleFilter selection(keys)=', activeKeys);
     this.selectedFilters$.next(activeKeys);
+    setTimeout(() => this.computeOverflowFilters(), 0);
   }
 
-  isFilterSelected(filter: { key: string }) {
+  isFilterSelected(filter: OccupationFilterConfig) {
     return this.selectedFilters.has(filter.key);
   }
 
@@ -290,13 +248,23 @@ export class PeopleComponent implements OnInit {
   // Préchargement (eager) des fermetures de sous-classes (peut être rendu lazy si souhaité)
   this.loadOccupationClosures();
 
-    this.subTitle = this.lang.getTranslation('people', this.lang.selectedLang);
+  this.subTitle = this.lang.getTranslation('people', this.lang.selectedLang);
     this.home_page = this.lang.getTranslation('home_page', this.lang.selectedLang);
     this.places = this.lang.getTranslation('places', this.lang.selectedLang);
     this.advanced_search = this.lang.getTranslation('advanced_search', this.lang.selectedLang);
     this.projects = this.lang.getTranslation('projects', this.lang.selectedLang);
     this.fields = this.lang.getTranslation('fields', this.lang.selectedLang);
-    this.bibliography = this.lang.getTranslation('bibliography', this.lang.selectedLang);
+  this.bibliography = this.lang.getTranslation('bibliography', this.lang.selectedLang);
+  this.tooltipAny = this.lang.getTranslation('combination_any', this.lang.selectedLang) || '';
+  this.tooltipAll = this.lang.getTranslation('combination_all', this.lang.selectedLang) || '';
+  this.formerVisitsTitle = this.lang.getTranslation('formerVisitsTitle', this.lang.selectedLang) || 'Vous avez visité :'; // <-- Ajoutez cette ligne
+
+    // Appliquer les traductions dynamiques pour les filtres
+    const currentLang = this.lang.selectedLang;
+    this.availableFilters = this.availableFilters.map(f => ({
+      ...f,
+      label: (OCCUPATION_FILTER_TRANSLATIONS as any)[f.key]?.[currentLang] || f.key
+    }));
 
     this.selectedItemsList = this.selectedItemsList.filter(el => el !== null);
 
@@ -331,108 +299,100 @@ export class PeopleComponent implements OnInit {
         }
       }),
       filter(([term]) => term.length >= 2),
-      switchMap(([term, activeKeys, disjoint]) => {
-        const baseClause = 'haswbstatement:P131=Q268686';
-        const termWithStar = term.endsWith('*') ? term : term + '*';
-        // Désormais on n'insère PLUS les occupations dans srsearch: filtrage client pour plus de contrôle
-        const srsearch = [baseClause, termWithStar].join(' ');
-        const limit = term.length === 2 ? 100 : 200; // limitation volontaire pour requêtes très courtes
-        console.log('[PeopleComponent] srsearch (sans occupations)=', srsearch, '| len=', term.length, '| limit=', limit, '| filtres=', activeKeys, '| mode=', disjoint ? 'OR' : 'AND');
-        const searchUrl = `https://database.factgrid.de/w/api.php?action=query&list=search&format=json&origin=*&srsearch=${encodeURIComponent(srsearch)}&srnamespace=120&srlimit=${limit}`;
-        return this.request.getItem(searchUrl).pipe(
-          tap(res => console.log('Réponse CirrusSearch:', res))
-        );
-      }),
-      map(res => {
-        if (!res.query || !res.query.search) return [];
-        const ids = res.query.search
-          .map((item: any) => {
-            const match = item.title.match(/Q\d+/);
-            return match ? match[0] : null;
-          })
-          .filter((qid: string | null) => !!qid);
-        console.log('Q-ids extraits:', ids);
-        return ids;
-      }),
+      switchMap(([term]) => this.search.searchIds(PEOPLE_SEARCH_CONFIG, term, this.minTermLength, this.lang.selectedLang)),
       filter((ids: string[]) => ids.length > 0),
-      switchMap((ids: string[]) => {
-        const lang = this.lang.selectedLang;
-        const chunks = chunkArray(ids, 50);
-        const requests = chunks.map(chunk => {
-          const idsParam = chunk.join('|');
-          const getEntitiesUrl = `https://database.factgrid.de/w/api.php?action=wbgetentities&ids=${idsParam}&format=json&languages=${lang}&origin=*`;
-          return this.request.getItem(getEntitiesUrl).pipe(
-            map((res: any) => res && res.entities ? Object.values(res.entities) as WikibaseEntity[] : [])
-          );
-        });
-        return requests.length > 0 ? forkJoin(requests).pipe(
-          map(results => results.flat())
-        ) : of([]);
-      }),
-      // Filtrage LOCAL des occupations
-      map((entities: WikibaseEntity[]) => {
-        const activeKeys = this.selectedFilters$.value;
-        const disjoint = this.combineDisjoint;
-        const advMode = this.advancedMode;
-        const advGroups = this.advancedGroups;
-        const occupationMap: Record<string, string> = this.availableFilters.reduce((acc, f) => { acc[f.key] = f.occupationId; return acc; }, {} as Record<string,string>);
-        const occupationProperties = ['P165','P106'];
-        // Préparer extraction des occIds pour chaque entité une seule fois
-        return entities.filter((e: any) => {
-          const occIds: string[] = [];
-          for (const p of occupationProperties) {
-            const claims = e.claims?.[p] || [];
-            for (const c of claims) {
-              const id = c?.mainsnak?.datavalue?.value?.id; if (id) occIds.push(id);
-            }
-          }
-          if (occIds.length === 0) return false;
-            const uniq = Array.from(new Set(occIds));
-          if (advMode) {
-            const groups = advGroups.filter(g => g.allOf.length > 0);
-            if (groups.length === 0) return true; // pas de contrainte
-            return groups.some(g => g.allOf.every(k => {
-              const closure = this.occupationClosureCache[k] || new Set([occupationMap[k]]);
-              return uniq.some(id => closure.has(id));
-            }));
-          }
-          if (activeKeys.length === 0) return true;
-          if (disjoint) {
-            return activeKeys.some(k => {
-              const closure = this.occupationClosureCache[k] || new Set([occupationMap[k]]);
-              return uniq.some(id => closure.has(id));
-            });
-          } else {
-            return activeKeys.every(k => {
-              const closure = this.occupationClosureCache[k] || new Set([occupationMap[k]]);
-              return uniq.some(id => closure.has(id));
-            });
-          }
-        });
-      }),
-      map((entities: WikibaseEntity[]) => {
-        const searchTerm = (this.searchInput.value || '').toLowerCase();
-        const lang = this.lang.selectedLang;
-        return entities.filter((item: WikibaseEntity) => {
-          const label = item.labels?.[lang]?.value?.toLowerCase() || '';
-          const aliases = (item.aliases?.[lang] || []).map(a => a.value.toLowerCase());
-          return (
-            searchTerm === '' ||
-            label.includes(searchTerm) ||
-            aliases.some(alias => alias.includes(searchTerm))
-          );
-        });
-      })
+      switchMap((ids: string[]) => this.search.fetchEntities(ids, this.lang.selectedLang)),
+      map((entities: WikibaseEntity[]) => this.search.filterEntitiesByClasses(PEOPLE_SEARCH_CONFIG, entities, this.selectedFilters$.value, this.occupationClosureCache, this.advancedMode, this.advancedGroups, this.combineDisjoint)),
+      map((entities: WikibaseEntity[]) => this.search.finalTextFilter(PEOPLE_SEARCH_CONFIG, entities, this.searchInput.value || '', this.lang.selectedLang))
     ).subscribe((re: WikibaseEntity[]) => {
       this.items = this.setLanguage.item(re, this.lang.selectedLang);
+      // mettre à jour le BehaviorSubject réactif
+      this.items$.next(this.items);
       this.isDisplay = this.items.length > 0;
       this.changeDetector.detectChanges();
     });
+
+    // Ajout du filtrage local réactif basé sur items$
+    this.filteredItems$ = combineLatest([
+      this.items$,
+      this.filterInput.valueChanges.pipe(startWith(''))
+    ]).pipe(
+      map(([items, filter]) => {
+        if (!filter) return items;
+        const f = (filter || '').toLowerCase();
+        return items.filter(item => {
+          const label = this.getItemLabel(item).toLowerCase();
+          const desc = this.getItemDescription(item).toLowerCase();
+          return label.includes(f) || desc.includes(f);
+        });
+      })
+    );
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.computeOverflowFilters(), 0);
+  this.resizeSub = this.resize$.pipe(debounceTime(150)).subscribe(() => this.computeOverflowFilters());
+  }
+
+  toggleCollapsedFilters() { this.collapsedFilters = !this.collapsedFilters; }
+  private computeOverflowFilters() {
+    try {
+      if (!this.filterButtons || this.filterButtons.length === 0) { this.overflowFilterKeys.clear(); return; }
+      const arr = this.filterButtons.toArray().filter(r => !!r && !!r.nativeElement);
+      if (arr.length === 0) { this.overflowFilterKeys.clear(); return; }
+      const firstEl = arr[0].nativeElement as HTMLElement;
+      if (!firstEl || !firstEl.getBoundingClientRect) { this.overflowFilterKeys.clear(); return; }
+      const firstTop = firstEl.getBoundingClientRect().top;
+      this.overflowFilterKeys.clear();
+      for (const ref of arr) {
+        const el = ref.nativeElement as HTMLElement;
+        if (!el || !el.getBoundingClientRect) continue;
+        const top = el.getBoundingClientRect().top;
+        const key = el.getAttribute('data-key');
+        if (key && top - firstTop > 1) this.overflowFilterKeys.add(key);
+      }
+      if (this.availableFilters.length < this.minCollapsibleFilters) {
+        this.overflowFilterKeys.clear();
+      }
+      if (this.overflowFilterKeys.size === 0) this.collapsedFilters = true;
+    } catch (e) {
+      // Fallback silencieux: on désactive overflow si un élément est introuvable (phase d'init)
+      this.overflowFilterKeys.clear();
+    }
+    this.changeDetector.detectChanges();
   }
 
   ngOnDestroy(): void {
     if (this.labels) {
       this.labels.unsubscribe();
     }
+  if (this.resizeSub) this.resizeSub.unsubscribe();
+  }
+
+  onItemRowClick(itemId: string) {
+    this.clickedItemId = itemId;
+    setTimeout(() => {
+      this.clickedItemId = null;
+      this.router.navigate(['/item', itemId]);
+    }, 200);
+  }
+
+  // Helpers pour récupérer label/description de façon sûre
+  private getItemLabel(item: any): string {
+    if (!item) return '';
+    if (typeof item.label === 'string' && item.label.trim()) return item.label;
+    const lang = this.lang.selectedLang;
+    if (item.labels && item.labels[lang] && item.labels[lang].value) return item.labels[lang].value;
+    if (item.labels && item.labels.en && item.labels.en.value) return item.labels.en.value;
+    return '';
+  }
+
+  private getItemDescription(item: any): string {
+    if (!item) return '';
+    if (typeof item.description === 'string' && item.description.trim()) return item.description;
+    const lang = this.lang.selectedLang;
+    if (item.descriptions && item.descriptions[lang] && item.descriptions[lang].value) return item.descriptions[lang].value;
+    if (item.descriptions && item.descriptions.en && item.descriptions.en.value) return item.descriptions.en.value;
+    return '';
   }
 }

@@ -1,0 +1,14 @@
+.gallery-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+mat-card {
+  max-width: 320px;
+}
+mat-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+}

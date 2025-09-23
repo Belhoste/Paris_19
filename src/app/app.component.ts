@@ -73,7 +73,9 @@ export class AppComponent implements OnInit {
   searchResearchField = new FormControl<ResearchField | null>(null);
   filteredResearchFields$: Observable<any[]>;
 
-  selectedLang: string = (localStorage['selectedLang'] === undefined) ? 'en' : localStorage['selectedLang'];
+  selectedLang: string = (localStorage['selectedLang'] === undefined)
+    ? this.getDefaultLang()
+    : localStorage['selectedLang'];
   selectedPage = (sessionStorage['selectedPage'] === undefined)
     ? JSON.stringify([{ name: 'FactGrid', address: '' }])
     : sessionStorage['selectedPage'];
@@ -215,5 +217,15 @@ export class AppComponent implements OnInit {
   toggleResearchField() {
     this.showResearchField = !this.showResearchField;
     this.selectedResearchFieldService.setShowResearchField(this.showResearchField);
+  }
+
+  getDefaultLang(): string {
+    // Liste des codes supportés
+    const supported = this.langs.map(l => l.code);
+    // Langue navigateur (ex: 'fr-FR' => 'fr')
+    const navLang = (navigator.languages && navigator.languages.length
+      ? navigator.languages[0]
+      : navigator.language || 'en').split('-')[0];
+    return supported.includes(navLang) ? navLang : 'en';
   }
 }

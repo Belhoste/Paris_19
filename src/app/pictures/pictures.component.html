@@ -1,0 +1,40 @@
+<div class="cardBackground">
+  <div class="home-header">
+    <h2>{{pictures}}</h2>
+    <p>{{searchOnImages}}</p>
+  </div>
+
+  <div class="home-cards">
+    <!--
+    Carte Galerie d'images par thèmes transformée au modèle de home
+    <mat-card class="home-card mat-elevation-z4 clickable" routerLink="/gallery" tabindex="0" role="link" aria-label="Galerie d'images">
+      <mat-card-title>Galerie d'images par thèmes</mat-card-title>
+      <mat-card-content>
+        <div class="card-image-row">
+          <picture class="card-image-left">
+            <img src="assets/galerie_theme.jpg" alt="Galerie d'images" class="card-image" loading="lazy" decoding="async" />
+          </picture>
+          <div class="card-image-text">
+            Explorez les photos de Paris par thèmes (rues, monuments, vie quotidienne…)
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    -->
+
+    <mat-card class="home-card mat-elevation-z4 clickable" routerLink="/marville-map" tabindex="0" role="link" aria-label="Plan Marville">
+      <mat-card-title>{{Marville_Paris}}</mat-card-title>
+      <mat-card-content>
+        <div class="card-image-row">
+          <picture class="card-image-left">
+            <img src="assets/marville-autoportrait-1861.jpg" alt="Autoportrait Marville" class="card-image" loading="lazy" decoding="async" />
+          </picture>
+          <div class="card-image-text">
+            Visualisez sur la carte les lieux où Marville a photographié Paris au 19e siècle.
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
